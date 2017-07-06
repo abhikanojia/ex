@@ -11,7 +11,7 @@
 # Returns the hash having characters as their keys
 # and their no. of occurences as values
 if ARGV.empty?
-  puts 'Please provide an input'
+  print 'Please provide an input'
   exit
 else
   # considering multiple arguments as a single string
