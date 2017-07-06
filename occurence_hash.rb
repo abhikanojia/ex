@@ -18,5 +18,5 @@ else
   string = ARGV.join(' ')
   histo = Hash.new(0)
   string.chars.each { |x| histo[x] += 1 if x.between?('A', 'z') }
-  puts histo
+  print histo
 end
