@@ -1,6 +1,6 @@
 # Public: Replaces the vowels in given string with a '*'.
 #
-# line  - This is the string provided as input to the program.
+# string  - This is the string provided as input to the program.
 #
 # Examples
 #
@@ -9,16 +9,13 @@
 #  # => Hello world
 #  # => H*ll* w*rld
 #
-# Returns the modified input having vowels replaced with '*'
-puts "Please enter a text"
-
-line = gets.chomp
-
-if line.empty?
-  print "Please provide an input"
+# Prints the modified input having vowels replaced with '*'
+if ARGV.empty?
+  print 'Please provide an input'
   exit
 else
   pattern = /[aieou]/
-  line.gsub!(pattern, '*')
-  print line
+  string = ARGV.join(' ')
+  string.gsub!(pattern, '*')
+  print string
 end
