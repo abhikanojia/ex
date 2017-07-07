@@ -2,6 +2,9 @@
 # All methods are module methods and should be called on the OccurenceHash
 # class object.
 #
+# string  - The String to be used for counting characters
+# which is passed as command line argument.
+#
 # Examples
 #
 #   obj = OccurenceHash.new(string)
