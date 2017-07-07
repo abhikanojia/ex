@@ -1,20 +1,30 @@
+# Public: Method for replacing vowels in given string with a '*'.
+# All methods should be called on the OccurenceHash class object.
+#
+# string  - The String to be used for replacing characters
+# which is passed as command line argument.
+#
+# Examples
+#
+#   obj = RegexClass.new(string)
+#   obj.regex_replace
+#   # => str*ng
 class RegexClass
-  attr_reader :val
-  def initialize(input)
-    @val = input
+  def initialize(string)
+    if string.empty?
+      print 'Please provide an input'
+      exit
+    else
+      # considering multiple arguments as a single string
+      @string = string.join(' ')
+    end
   end
 
   def regex_replace
-    @val.gsub!(/[aeiou]/,'*')
-    print @val
+    @string.gsub!(/[aeiou]/, '*')
+    print @string
   end
 end
 
-if ARGV.empty?
-  print "Please provide an input"
-  exit
-else
-  str = ARGV.join(' ')
-  obj = RegexClass.new(str)
-  obj.regex_replace
-end
+obj = RegexClass.new(ARGV)
+obj.regex_replace
