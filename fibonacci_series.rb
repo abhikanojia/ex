@@ -1,16 +1,35 @@
+# Public: Method for printing fibonacci series.
+# All methods should be called on the FibonacciSeries class object.
+#
+# num  - The Integer upto which series to be printed passed as
+# command line argument.
+#
+# {|k| print k + " " } - Block for printing the output number which is passed to
+# print series funtion.
+#
+# Examples
+#
+#   obj = FibonacciSeries.new(10)
+#   obj.print_series { |k| print k + " " }
+#   # => 1 1 2 3 5 8
 class FibonacciSeries
-  attr_reader :num
-  
   def initialize(num)
-    @num = num
+    if num[0].nil?
+      print 'Please provide an input'
+      exit
+    else
+      # considering multiple arguments as a single string
+      @num = num[0].to_i
+    end
   end
 
   def print_series
-    i, j = 0, 1
-    print i, j
+    i = 0
+    j = 1
+    yield(j.to_s)
     k = i + j
-    while k <= @num
-      print k
+    while k < @num
+      yield(k.to_s)
       i = j
       j = k
       k = i + j
@@ -18,11 +37,5 @@ class FibonacciSeries
   end
 end
 
-if ARGV.empty?
-  print "Please provide an input"
-  exit
-else
-  num = ARGV[0].to_i
-  obj = FibonacciSeries.new(num)
-  obj.print_series
-end
+obj = FibonacciSeries.new(ARGV)
+obj.print_series { |k| print k + ' ' }
