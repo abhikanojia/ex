@@ -21,10 +21,10 @@ class RegexClass
   end
 
   def regex_replace
-    @string.gsub!(/[aeiou]/, '*')
-    print @string
+    @string.gsub!(/[aeiouAEIOU]/, '*')
+    @string
   end
 end
 
 obj = RegexClass.new(ARGV)
-obj.regex_replace
+print obj.regex_replace

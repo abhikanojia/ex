@@ -24,18 +24,18 @@ class FibonacciSeries
   end
 
   def print_series
-    i = 0
-    j = 1
-    yield(j.to_s)
-    k = i + j
-    while k < @num
-      yield(k.to_s)
-      i = j
-      j = k
-      k = i + j
+    start = 1
+    next_to_start = 1
+    2.times { yield(start.to_s) }
+    output = start + next_to_start
+    while output < @num
+      yield(output.to_s)
+      start = next_to_start
+      next_to_start = output
+      output = start + next_to_start
     end
   end
 end
 
 obj = FibonacciSeries.new(ARGV)
-obj.print_series { |k| print k + ' ' }
+obj.print_series { |output| print output + ' ' }

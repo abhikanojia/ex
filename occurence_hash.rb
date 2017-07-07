@@ -24,9 +24,9 @@ class OccurenceHash
   def occurence_hash
     histo = Hash.new(0)
     @string.chars.each { |x| histo[x] += 1 if x.between?('A', 'z') }
-    print histo
+    histo
   end
 end
 
 obj = OccurenceHash.new(ARGV)
-obj.occurence_hash
+print obj.occurence_hash

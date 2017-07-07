@@ -1,6 +1,5 @@
 class Vehicle
-  attr_reader   :bike_name
-  attr_accessor :bike_price
+  attr_reader   :bike_name, :bike_price
 
   def initialize(bike_name, bike_price)
     @bike_name   = bike_name.to_s
@@ -13,8 +12,7 @@ class Vehicle
 end
 
 class Bike < Vehicle
-  attr_reader :bike_dealer, :percent_price_increase
-  alias_method :parent_to_s, :to_s
+  attr_reader :bike_dealer, :percent_price_increase, :bike_price
 
   def initialize(bike_name, bike_price, bike_dealer, percent_price_increase)
     super(bike_name, bike_price)
@@ -27,7 +25,9 @@ class Bike < Vehicle
   end
 
   def price_after_increase
-    price += price * (percent_price_increase / 100)
+    puts '1'
+    bike_price += bike_price * (percent_price_increase / 100)
+    puts 'b'
   end
 end
 

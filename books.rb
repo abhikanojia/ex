@@ -1,5 +1,6 @@
 class Books
-	attr_reader :isbn, :price
+	attr_reader   :isbn
+  attr_accessor :price
 
 	def initialize(isbn, price)
 		@isbn = isbn
@@ -7,15 +8,13 @@ class Books
 	end
 
 	def to_s
-		"ISBN : #{@isbn} and Price: #{@price}"
+		"ISBN : #{isbn} and Price: #{price}"
 	end
 end
 
-b1 = Books.new("isbn1", 12)
-puts b1
+book = Books.new("isbn1230", 120.00)
+puts book
 
-b3 = Books.new("isbn3", 12.12)
-puts b3
+book.price = book.price * 100
 
-b2 = Books.new("isbn2", "12.22")
-puts b2
+puts book
