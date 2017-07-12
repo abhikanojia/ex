@@ -9,8 +9,7 @@
 #   # => Input string is not palindrome
 class String
   def palindrome?
-    string = self
-    return true unless string != string.reverse
+    self == reverse
   end
 end
 

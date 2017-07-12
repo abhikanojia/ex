@@ -10,23 +10,20 @@
 # percent_price_increase - Increase in percent price of bike,
 # command line argument.
 class Vehicle
-  attr_reader :name
-  attr_accessor :price
+  attr_reader :name, :price
 
   def initialize(name, price)
     @name   = name.to_s
     @price  = price
-    self.class.count += 1
   end
 
   def to_s
-    "Bike Name: #{name}\nBike Price: #{price}\n"
+    "Vehicle Name: #{name}\nVehicle Price: #{price}\n"
   end
 end
 # Bike class inherits Vehicle class
 class Bike < Vehicle
   attr_reader :dealer, :percent_price_increase
-  attr_accessor :price
 
   def initialize(name, price, dealer, percent_price_increase)
     super(name, price)
@@ -35,7 +32,10 @@ class Bike < Vehicle
   end
 
   def to_s
-    super + "Bike Dealer: #{dealer}"
+    "Bike Name: #{name}\nBike Price: #{price}\nBike Dealer: #{dealer}\n\n" \
+    "After #{ARGV[3].to_f} percent hike in price:\n" \
+    "Bike Name: #{name}\nBike Price: #{price_after_increase}\n" \
+    "Bike Dealer: #{dealer}"
   end
 
   def price_after_increase
@@ -49,8 +49,5 @@ if ARGV[0].nil? || ARGV[1].nil? || ARGV[2].nil? || ARGV[3].nil?
   exit
 else
   bike = Bike.new(ARGV[0], ARGV[1], ARGV[2], ARGV[3])
-  puts bike
-  puts "\nAfter #{ARGV[3].to_f} percent hike in price:"
-  bike.price_after_increase
   print bike
 end
