@@ -1,3 +1,4 @@
+# method to calculate factorial of given number
 class Integer
   def factorial
     n = self
