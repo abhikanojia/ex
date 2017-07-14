@@ -5,22 +5,22 @@ class Array
     hash = Hash.new([])
     each { |x| hash[x.length] += [x] }
     h = hash.to_h
-    output = Hash.new([])
-    h.inject(output) do |_, value|
+    art = Hash.new([])
+    h.inject(art) do |_, value|
       if value[0].odd?
-        output['odd'] += [value[1]]
+        art["odd"] += [value[1]]
       else
-        output['even'] = [value[1]]
+        art["even"] = [value[1]]
       end
     end
-    output
+    art
   end
 end
-# class for coverting string to array
+
 class String
   def to_array
     require 'json'
-    JSON.parse(tr('\'', '"'))
+    JSON.parse(tr("'", '"'))
   end
 end
 
