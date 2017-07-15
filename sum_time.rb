@@ -2,33 +2,38 @@
 def split_time(time)
   time.split(/:/).map(&:to_i)
 end
-# returns number of days
+
 def days(hours)
   hours / 24
 end
-def seconds(seconds)
-  seconds -= 60
-end
-# make time adjustments
-def process_time(hours, mins, seconds)
-    if seconds > 60
-      seconds -= 60
-      mins += 1
-    end
-    if mins > 60
-      mins -= 60
-      hours += 1
-    end
 
-    if hours > 24
-      days = days(hours)
-      hours %= 24
-    end
-    if days.nil?
-      print "#{"%02d" % hours}:#{"%02d" % mins}:#{"%02d" % seconds}"
-    else
-      print "#{days} day && #{'%02d' % hours}:#{'%02d' % mins}:#{'%02d' % seconds}"
-    end
+def seconds(seconds)
+  seconds - 60
+end
+
+def process_time(hours, mins, seconds)
+  if seconds > 60
+    seconds -= 60
+    mins += 1
+  end
+
+  if mins > 60
+    mins -= 60
+    hours += 1
+  end
+
+  if hours > 24
+    days = days(hours)
+    hours %= 24
+  end
+
+  if days.nil?
+    format('%02d', hours) + ':' + format('%02d', mins) + ':' \
+    + format('%02d', seconds)
+  else
+    format('%d', days) + 'day & ' + format('%02d', hours) + ':' \
+    + format('%02d', mins) + ':' + format('%02d', seconds)
+  end
 end
 
 if ARGV[0].nil? || ARGV[1].nil?
