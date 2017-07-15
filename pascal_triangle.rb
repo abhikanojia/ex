@@ -1,23 +1,20 @@
+# Public - Method for printing pascal's triangle using yield
 def pascal(number)
-  (0...number).step(1) do |step|
-    i = 1
-    sum = 0
-    for i in (0..step)
-      print i
+  (1..number).step(1) do |row|
+    c = 1
+    (1..row).step(1) do |col|
+      yield c
+      c = c * (row - col) / col
     end
-    print "\n"
+    puts  if row < number
   end
 end
 
-#pascal(4)
-number = 4
-    for i in (0..number) do |step|
-      var = 1
-      for j in (1..(number - step)) { print " " }
-
-        for k in (0..step) do |k|
-          cout << "      " << val;
-          val = val * (number - k) / (k + 1);
-        end
-        puts
-    end
+if ARGV[0].nil?
+  print 'Please provide an input'
+  exit
+else
+  pascal(ARGV[0].to_i) do |number|
+    print number.to_s + ' '
+  end
+end
