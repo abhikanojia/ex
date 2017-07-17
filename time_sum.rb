@@ -8,9 +8,9 @@ class SumTime
   end
 
   def process_time
-    seconds if @seconds > 60
-    mins if @mins > 60
-    hours if @hours > 24
+    seconds if @seconds >= 60
+    mins if @mins >= 60
+    hours if @hours >= 24
     if @days.nil?
       print_sum
     else
