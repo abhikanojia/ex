@@ -1,7 +1,17 @@
 # Method for printing primes
 class Integer
+  def divides?(x)
+    self % x == 0
+  end
+
+  def prime?
+    2.upto(self / 2) do |x|
+      return false if divides?(x)
+    end
+    true
+  end
+
   def print_primes
-    require 'prime'
     Enumerator.new do |yielder|
       (2..self).step(1) do |num|
         yielder.yield num if num.prime?

@@ -8,13 +8,8 @@ class Account
   def initialize(name, balance)
     @name = name
     @balance = balance
-    if @@count.zero?
-      @account_no = 1
-      @@count += 1
-    else
-      @@count += 1
-      @account_no = @@count
-    end
+    @@count += 1
+    @account_no = @@count
   end
 
   def to_s
@@ -33,6 +28,8 @@ class FundTransfer
     if @account_a.balance >= amount
       withdraw(@account_a, amount)
       deposit(@account_b, amount)
+    else
+      print "!! Unsufficient balance for transfer !!\n"
     end
   end
 
