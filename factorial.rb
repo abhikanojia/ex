@@ -1,11 +1,10 @@
 # method to calculate factorial of given number
 class Integer
   def factorial
-    n = self
-    if n <= 0
+    if self <= 0
       1
     else
-      (1..n).to_a.inject(:*)
+      (1..self).to_a.inject(:*)
     end
   end
 end
