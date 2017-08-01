@@ -7,8 +7,7 @@ end
 # reverse_iterate function
 class Array
   def reverse_iterate
-    b = reverse
-    0.upto(b.length) { |x| yield b[x] }
+    (length-1).downto(0) { |x| yield self[x] }
   end
 end
 
