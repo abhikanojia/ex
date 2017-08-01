@@ -96,3 +96,6 @@ product_list.each do |key, _|
                 key.price.to_s + " | ", key.amt_after_tax.to_s + " | \n"
               )
 end
+
+print "\n\n"
+print format("%20s", "Total Amount: #{product_list.total_amount}")
