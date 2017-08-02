@@ -1,3 +1,4 @@
+# Public - Method for calculating total_amount
 class Array
   def total_amount
     total_amt = 0
@@ -20,25 +21,25 @@ class Product
   end
 
   def exempted?
-    true if @exempted == "y"
+    ['yes', 'y'].include?(@exempted)
   end
 
   def imported?
-    true if @imported == "y"
+    ['yes', 'y'].include?(@imported)
   end
 end
-
+# Class for calculating sales tax
 class SalesTax
   def initialize
     @sales_tax = 0.1
     @import_duty = 0.05
   end
 
-  def totalTax(product)
-    product.amt_after_tax  = product.price + product.sales_tax + product.import_duty
+  def total_taxes(product)
+    product.amt_after_tax = product.price + product.sales_tax + product.import_duty
   end
 
-  def salesTax(product)
+  def sales_taxes(product)
     if product.exempted?
       product.sales_tax = 0
     else
@@ -46,7 +47,7 @@ class SalesTax
     end
   end
 
-  def importDuty(product)
+  def import_duty_amount(product)
     if product.imported?
       product.import_duty = (product.price * @import_duty)
     else
@@ -55,47 +56,41 @@ class SalesTax
   end
 end
 
-# product = Product.new("Chocolates", 120, "y", "n")
-# tax = SalesTax.new
-# print tax.sales_tax(product)
 product_list = []
+add_more = 'y'
 
-add_more = "y"
-
-while add_more == "y"
-  print "Name of the product: "
+while add_more == 'y'
+  puts
+  puts 'Name of the product: '
   name = gets.chomp
-  print "Imported?"
+  print 'Imported?'
   imported = gets.chomp
-  print "Extempted from sales tax?"
+  print 'Extempted from sales tax?'
   exempted = gets.chomp
-  print "Price:"
+  print 'Price:'
   price = gets.chomp
-
   # create new product
   product = Product.new(name, price, imported, exempted)
   tax = SalesTax.new
-  tax.salesTax(product)
-  tax.importDuty(product)
-  tax.totalTax(product)
-
+  tax.sales_taxes(product)
+  tax.import_duty_amount(product)
+  tax.total_taxes(product)
   product_list.push(product)
-
   # Create more
-  print "Do you want to add more items to your list(y/n):"
+  print 'Do you want to add more items to your list(y/n):'
   add_more = gets.chomp
 end
 
-#print product_list.total_amount
-print "\n\n"
-print format("%0s" "%10s" "%10s" "%10s" "%10s",
-              "| Item Name |", " Sales Tax |", " Duty Tax |", " Price |", " Total Price |\n")
-product_list.each do |key, _|
-  print format("%0s" "%10s" "%10s" "%10s" "%10s",
-                "| " + key.name.to_s + " | ", key.sales_tax.to_s + " | ", key.price.to_s + " | ",
-                key.price.to_s + " | ", key.amt_after_tax.to_s + " | \n"
-              )
-end
+puts
+format = '%10s %15s %15s %15s %15s'
+format_out = '%-10s %15.2f %15.2f %15.2f %15.2f'
 
-print "\n\n"
-print format("%20s", "Total Amount: #{product_list.total_amount}")
+puts format % ['Item Name |', 'Sales Tax |', 'Duty Tax |', 'Price |', 'Total Amount |']
+puts '----------------------------------------------------------------------------'
+product_list.each do |key, _|
+  puts format_out % [key.name.to_s, key.sales_tax, key.import_duty,
+                     key.price, key.amt_after_tax]
+  puts '----------------------------------------------------------------------------'
+end
+puts
+print format('%70s %.2f', 'Total Amount:', " #{product_list.total_amount}")
