@@ -1,12 +1,13 @@
-# for converting string representation of array to
-# array
+# Public - Method
+# return hash having even an odd length strings
+# grouped
 class Array
   def array_hash
     hash = Hash.new([])
-    each { |x| hash[x.length] += [x] }
-    h = hash.to_h
+    each { |item| hash[item.length] += [item] }
+    new_hash = hash.to_h
     output = Hash.new([])
-    h.inject(output) do |_, value|
+    new_hash.inject(output) do |_, value|
       if value[0].odd?
         output['odd'] += [value[1]]
       else
@@ -16,18 +17,16 @@ class Array
     output
   end
 end
-# class for coverting string to array
+# Method - to_array converts string style array to array values
 class String
   def to_array
-    require 'json'
-    JSON.parse(tr('\'', '"'))
+    tr('"|[|]|\'', '').split(/\,/).map(&:to_s)
   end
 end
 
 if ARGV[0].nil?
   print 'Please provide an input'
-  exit
 else
-  array_string = ARGV[0].to_array.map(&:to_s)
-  print array_string.array_hash
+  arr = ARGV[0].to_array
+  puts arr.array_hash
 end

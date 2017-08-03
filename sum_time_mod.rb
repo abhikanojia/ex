@@ -120,14 +120,13 @@ if ARGV.empty?
   print 'Please provide an input'
   exit
 else
-  pattern = /([0|1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]/
+  pattern = /(^[0|1]?[0-9]|2[0-3]):[0-5]?[0-9]:[0-5]?[0-9]/
 
   time = []
   ARGV.each.with_index do |element, index|
-    if pattern.match?('"'+element+'"')
+    if pattern.match?(element)
       time[index] = TimeFormat.new(element).split_time
     else
-      print element
       print 'Invalid 24-hour time value'
       exit
     end

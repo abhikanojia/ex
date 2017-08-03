@@ -1,26 +1,20 @@
-# Public - Class for highlighting given search string
-class HighlightSearch
-  attr_accessor :string, :search_string
-
-  def initialize(string, search_string)
-    @search_string = search_string.to_s
-    @string = string
-  end
-
-  def match
-    @string.gsub(/(?i)#{search_string}/) { |matched| '(' + matched + ')' }
-  end
-
-  def count_match
-    @string.scan(/#{search_string}/i).length
+# highlight search
+class String
+  def highlight_search(search_string)
+    count = 0
+    string = dup
+    string.gsub!(/(?i)#{ search_string }/) do |matched|
+      count += 1
+      '(' + matched + ')'
+    end
+    [string, count]
   end
 end
 
-if ARGV[0].nil? || ARGV[1].nil?
+if ARGV.first.nil? || ARGV[1].nil?
   print 'Please provide an input'
-  exit
 else
-  obj = HighlightSearch.new(ARGV[0], ARGV[1])
-  print obj.match
-  print "\nTotal occurrences found: #{obj.count_match}"
+  highlighted_string, occurence_count = ARGV.first.highlight_search(ARGV[1])
+  print highlighted_string
+  print "\nTotal occurrences found: #{ occurence_count }"
 end

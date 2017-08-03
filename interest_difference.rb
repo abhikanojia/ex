@@ -4,15 +4,15 @@ class Interest
     @block = block
   end
 
-  def show_diff(p, t, r)
-    @block.call(calculate_diff(p, t, r))
+  def show_diff(principal, time, rate)
+    @block.call(calculate_diff(principal, time, rate))
   end
 
   private
 
-  def calculate_diff(p, t, r)
-    si = p * (1 + (r * t))
-    ci = p * ((1 + r)**t)
+  def calculate_diff(principal, time, rate)
+    si = principal * (1 + (rate * time))
+    ci = principal * ((1 + rate)**time)
     ci - si
   end
 end
