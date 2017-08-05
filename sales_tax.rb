@@ -1,4 +1,5 @@
-# Public - Method for calculating total_amount
+# Public - Class for holding various
+# products and generating final output
 class LineItems
   def initialize
     @line_items = []
@@ -14,18 +15,22 @@ class LineItems
     @total_amount
   end
 
-  def get_list
-    @line_items.to_enum
-  end
-
   def generate_bill
-    @line_items.get_list.each do |key, _|
-      yield [key.name.to_s, key.sales_tax, key.import_duty,
-                      key.price, key.amt_after_tax]
+    input = UserInput.new
+    list_items.each do |key, _|
+      yield input.data_format % [key.name.to_s, key.sales_tax.to_f, key.import_duty.to_f,
+                                  key.price, key.sub_total.to_f]
     end
   end
+
+  private
+
+  def list_items
+    @line_items
+  end
 end
-# Product class
+# Product class - Holds Produc information and
+# calculates related taxes
 class Product
   attr_accessor :name, :price, :imported, :exempted
   attr_accessor :sales_tax, :import_duty, :sub_total
@@ -34,30 +39,32 @@ class Product
     @sales_tax = 0.1
     @import_duty = 0.05
     @sub_total = 0
+    @this = self
   end
 
   def calculate_taxes
-    self.sales_tax = get_sales_tax
-    self.import_duty = get_import_duty
-    self.sub_total = total_taxes
+    @this.sales_tax = _sales_tax
+    @this.import_duty = _import_duty
+    @this.sub_total = total_taxes
   end
 
   private
 
-  def get_import_duty
-    (self.price * @import_duty).to_f if self.imported.eql? "yes"
+  def _import_duty
+    (@this.price * @import_duty).to_f if @this.imported.eql? 'yes'
   end
 
-  def get_sales_tax
-    (self.price * @sales_tax).to_f if self.exempted.eql? "no"
+  def _sales_tax
+    (@this.price * @sales_tax).to_f if @this.exempted.eql? 'no'
   end
 
   def total_taxes
-    (self.price + self.sales_tax + self.import_duty)
+    (@this.price.to_f + @this.sales_tax.to_f + @this.import_duty.to_f)
   end
 end
-
-class UserInputOutput
+# Public - for taking input and prompting
+# messages to user
+class UserInput
   attr_reader :header_format, :data_format
 
   def initialize
@@ -66,8 +73,9 @@ class UserInputOutput
   end
 
   def prompt_messages
-    ['Name of the product: ', 'Imported?', 'Extempted from sales tax?', 'Price:',
-      'Do you want to add more items to your list(y/n):']
+    ['Name of the product: ', 'Imported?',
+      'Extempted from sales tax?', 'Price:',
+      'Do you want to add more items to your list(y/n):'].cycle
   end
 
   def headers
@@ -75,47 +83,35 @@ class UserInputOutput
   end
 
   def total_format
-    ['%70s %.2f']
+    '%69s %.2f'
   end
 end
 
 add_more = 'y'
-input = UserInputOutput.new
-product = Product.new
+input = UserInput.new
+prompt = input.prompt_messages
 line_items = LineItems.new
 
 while add_more == 'y'
-  print input.prompt_messages.first
+  product = Product.new
+  print prompt.next
   product.name = gets.chomp
-  print input.prompt_messages[1]
+  print prompt.next
   product.imported = gets.chomp
-  print input.prompt_messages[2]
+  print prompt.next
   product.exempted = gets.chomp
-  print input.prompt_messages[3]
+  print prompt.next
   product.price = gets.chomp.to_f
-  puts input.prompt_messages.last
+  puts prompt.next
   product.calculate_taxes
   line_items.push(product)
   add_more = gets.chomp
 end
-
-print input.header_format % input.headers
-line_items.get_list.each do |key, _|
-  puts input.data_format % [key.name.to_s, key.sales_tax, key.import_duty,
-                      key.price, key.amt_after_tax]
+puts
+puts input.header_format % input.headers
+puts '----------------------------------------------------------------------------'
+line_items.generate_bill do |data|
+  puts data
+  puts '----------------------------------------------------------------------------'
 end
-print format(input.total_format, 'Total Amount:', " #{product_list.total_amount}")
-
-# puts
-# format = '%10s %15s %15s %15s %15s'
-# format_out = '%-10s %15.2f %15.2f %15.2f %15.2f'
-
-# puts format % ['Item Name |', 'Sales Tax |', 'Duty Tax |', 'Price |', 'Total Amount |']
-# puts '----------------------------------------------------------------------------'
-# product_list.each do |key, _|
-#   puts format_out % [key.name.to_s, key.sales_tax, key.import_duty,
-#                      key.price, key.amt_after_tax]
-#   puts '----------------------------------------------------------------------------'
-# end
-# puts
-# print format('%70s %.2f', 'Total Amount:', " #{product_list.total_amount}")
+print input.total_format % ['Total Amount:', " #{line_items.total_bill}"]

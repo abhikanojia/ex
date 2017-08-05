@@ -1,136 +1,52 @@
-# Public - Class for creating sum of time
-class SumTime
-  attr_accessor :hours, :mins, :seconds
-  def initialize(hours, mins, seconds)
-    @hours = hours
-    @mins = mins
-    @seconds = seconds
+# Public -Method sum_time for
+# adding time given
+class Time
+  def initialize
+    @total_days, @total_hours, @total_minutes, @total_seconds = 0, 0, 0, 0
   end
 
-  def process_time
-    seconds if @seconds >= 60
-    mins if @mins >= 60
-    hours if @hours >= 24
-    if @days.nil?
-      print_sum
+  def sum_time(time_arr)
+    time_arr.each do |time|
+      return 'Invalid 24-hour time value' if validate(time).nil?
+      hours, minutes, seconds = time.split(':')
+      @total_seconds += seconds.to_i
+      @total_minutes += minutes.to_i
+      @total_hours   += hours.to_i
+      extra_time
+    end
+    if @total_days.zero?
+      [(@total_hours % 24).to_s, @total_minutes.to_s, @total_seconds.to_s]
     else
-      print_sum_with_days
+      [@total_days.to_s, (@total_hours % 24).to_s, @total_minutes.to_s, @total_seconds.to_s]
     end
   end
 
   private
 
-  def no_of_days(hours)
-    hours / 24
+  def validate(time)
+    pattern = /(^[0|1]?[0-9]|2[0-3]):[0-5]?[0-9]:[0-5]?[0-9]/
+    true if pattern.match(time)
   end
 
-  def add_minutes(seconds)
-    seconds / 60
-  end
-
-  def add_hours(mins)
-    mins / 60
-  end
-
-  def seconds
-    @mins += add_minutes(@seconds)
-    @seconds %= 60
-  end
-
-  def mins
-    @hours += add_hours(@mins)
-    @mins %= 60
-  end
-
-  def hours
-    @days = no_of_days(@hours)
-    @hours %= 24
-  end
-
-  def print_sum
-    format('%02d', @hours) + ':' + format('%02d', @mins) + ':' \
-    + format('%02d', @seconds)
-  end
-
-  def print_sum_with_days
-    format('%d', @days) + 'day & ' + format('%02d', @hours) + ':' \
-      + format('%02d', @mins) + ':' + format('%02d', @seconds)
-  end
-end
-# for converting given string time to integer array
-class TimeFormat
-  attr_accessor :time_a
-
-  def initialize(time_a)
-    @time_a = time_a
-  end
-
-  def split_time
-    @time_a = @time_a.split(/:/).map(&:to_i)
-  end
-end
-# for handling multiple parameter
-class AddTime
-  attr_accessor :time
-
-  def initialize(time)
-    @time = time
-  end
-
-  def p_time
-    p @time
-  end
-
-  def add_time
-    seconds = a_seconds
-    mins = a_minutes
-    hours = a_hours
-    time = SumTime.new(hours, mins, seconds)
-    time.process_time
-  end
-
-  private
-
-  def a_seconds
-    seconds = 0
-    @time.each.with_index do |_, index|
-      seconds += @time[index][2]
-    end
-    seconds
-  end
-
-  def a_minutes
-    minutes = 0
-    @time.each.with_index do |_, index|
-      minutes += @time[index][1]
-    end
-    minutes
-  end
-
-  def a_hours
-    hours = 0
-    @time.each.with_index do |_, index|
-      hours += @time[index][0]
-    end
-    hours
+  def extra_time
+    extra_minutes, @total_seconds = @total_seconds.divmod(60)
+    @total_minutes += extra_minutes
+    extra_hours, @total_minutes = @total_minutes.divmod(60)
+    @total_hours += extra_hours
+    @total_days = @total_hours / 24
   end
 end
 
 if ARGV.empty?
   print 'Please provide an input'
-  exit
 else
-  pattern = /(^[0|1]?[0-9]|2[0-3]):[0-5]?[0-9]:[0-5]?[0-9]/
-
-  time = []
-  ARGV.each.with_index do |element, index|
-    if pattern.match?(element)
-      time[index] = TimeFormat.new(element).split_time
-    else
-      print 'Invalid 24-hour time value'
-      exit
-    end
+  object = Time.new
+  time = object.sum_time(ARGV)
+  if time.length.eql? 4
+    print '"' + format('%01d day & %02d:%02d:%02d', time[0], time[1], time[2], time[3]) + '"'
+  elsif time.length.eql? 3
+    print '"' + format("%02d:%02d:%02d", time[0], time[1], time[2]) + '"'
+  else
+    print "\"#{time}\""
   end
-  ob = AddTime.new(time)
-  print '"' + ob.add_time + '"'
 end

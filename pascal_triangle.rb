@@ -7,7 +7,7 @@ class PascalTriangle
         yield to_print
         to_print = to_print * (row - col) / col
       end
-      puts if row < number
+      yield 0 if row < number
     end
   end
 end
@@ -17,6 +17,6 @@ if ARGV[0].nil?
 else
   obj = PascalTriangle.new
   obj.print_upto(ARGV.first.to_i) do |number|
-    print "#{number} "
+    print number.zero? ? "\n" : "#{number} "
   end
 end
