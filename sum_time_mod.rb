@@ -2,7 +2,10 @@
 # adding time given
 class Time
   def initialize
-    @total_days, @total_hours, @total_minutes, @total_seconds = 0, 0, 0, 0
+    @total_days = 0
+    @total_hours = 0
+    @total_minutes = 0
+    @total_seconds = 0
   end
 
   def sum_time(time_arr)

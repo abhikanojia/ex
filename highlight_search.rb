@@ -2,8 +2,7 @@
 class String
   def highlight_search(search_string)
     count = 0
-    string = dup
-    string.gsub!(/(?i)#{ search_string }/) do |matched|
+    string = gsub(/(?i)#{ search_string }/) do |matched|
       count += 1
       '(' + matched + ')'
     end

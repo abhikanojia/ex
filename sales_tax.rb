@@ -1,6 +1,7 @@
 # Public - Class for holding various
 # products and generating final output
-class LineItems
+class Cart
+  attr_reader :line_items
   def initialize
     @line_items = []
     @total_amount = 0
@@ -17,16 +18,10 @@ class LineItems
 
   def generate_bill
     input = UserInput.new
-    list_items.each do |key, _|
+    @line_items.each do |key, _|
       yield input.data_format % [key.name.to_s, key.sales_tax.to_f, key.import_duty.to_f,
                                   key.price, key.sub_total.to_f]
     end
-  end
-
-  private
-
-  def list_items
-    @line_items
   end
 end
 # Product class - Holds Produc information and
@@ -90,7 +85,7 @@ end
 add_more = 'y'
 input = UserInput.new
 prompt = input.prompt_messages
-line_items = LineItems.new
+line_items = Cart.new
 
 while add_more == 'y'
   product = Product.new
@@ -109,9 +104,9 @@ while add_more == 'y'
 end
 puts
 puts input.header_format % input.headers
-puts '----------------------------------------------------------------------------'
+puts '-' * 80
 line_items.generate_bill do |data|
   puts data
-  puts '----------------------------------------------------------------------------'
+  puts '-' * 80
 end
-print input.total_format % ['Total Amount:', " #{line_items.total_bill}"]
+puts input.total_format % ['Total Amount:', " #{line_items.total_bill}"]

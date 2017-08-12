@@ -4,8 +4,6 @@ headers = ["User Type", "Order Type", "Wallet_amount", "Organized by", "Recepien
 
 user_type = ["newuser", "member", "lead"]
 
-wallet = [0, 20, 30]
-
 organised_by = ["new_organiser", "member_organiser"]
 
 recepients = ["all_new", "both_member", "one_new", "one_member"]

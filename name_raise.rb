@@ -9,6 +9,9 @@ class Name
   attr_reader :firstname, :lastname
 
   def initialize(firstname, lastname)
+    raise NoFirstName if firstname.nil?
+    raise NoLastName if lastname.nil?
+    raise NoUpperCaseError if firstname[0].upcase != firstname[0]
     @firstname = firstname
     @lastname = lastname
   end
@@ -19,9 +22,6 @@ class Name
 end
 
 begin
-  raise NoFirstName if ARGV[0].nil?
-  raise NoLastName if ARGV[1].nil?
-  raise NoUpperCaseError if ARGV[0][0].upcase != ARGV[0][0]
   user = Name.new(ARGV[0], ARGV[1])
   print user
 rescue NoFirstName

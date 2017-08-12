@@ -24,9 +24,9 @@ class String
   end
 end
 
-if ARGV[0].nil?
+if ARGV.first.nil?
   print 'Please provide an input'
 else
-  arr = ARGV[0].to_array
+  arr = ARGV.first.to_array
   puts arr.array_hash
 end
