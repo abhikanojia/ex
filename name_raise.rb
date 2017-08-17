@@ -9,9 +9,7 @@ class Name
   attr_reader :firstname, :lastname
 
   def initialize(firstname, lastname)
-    raise NoFirstName if firstname.nil?
-    raise NoLastName if lastname.nil?
-    raise NoUpperCaseError if firstname[0].upcase != firstname[0]
+    validate_name(firstname, lastname)
     @firstname = firstname
     @lastname = lastname
   end
@@ -19,15 +17,27 @@ class Name
   def to_s
     "Your name is #{firstname} #{lastname}"
   end
+
+  private
+
+  def validate_name(firstname, lastname)
+    begin
+      raise NoFirstName if firstname.nil?
+      raise NoLastName if lastname.nil?
+      raise NoUpperCaseError if firstname[0].upcase != firstname[0]
+    rescue NoFirstName
+      print 'Firstname cannot be blank'
+      exit
+    rescue NoLastName
+      'Lastname cannot be blank'
+      exit
+    rescue NoUpperCaseError
+      'Firstname must start with uppercase letter'
+      exit
+    end
+  end
 end
 
-begin
-  user = Name.new(ARGV[0], ARGV[1])
-  print user
-rescue NoFirstName
-  print 'Firstname cannot be blank'
-rescue NoLastName
-  print 'Lastname cannot be blank'
-rescue NoUpperCaseError
-  print 'Firstname must start with uppercase letter'
-end
+user = Name.new(ARGV[0], ARGV[1])
+print user
+

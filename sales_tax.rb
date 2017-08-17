@@ -16,7 +16,7 @@ class Cart
     @total_amount
   end
 
-  def generate_bill 
+  def generate_bill
     @line_items.each do |item, _|
       item_details = []
       item_details << item.name.to_s << item.sales_tax.to_f
@@ -29,34 +29,30 @@ end
 # Product class - Holds Produc information and
 # calculates related taxes
 class Product
+  IMPORTED = 'yes'
+  EXEMPTED = 'no'
   attr_accessor :name, :price, :imported, :exempted
   attr_accessor :sales_tax, :import_duty, :sub_total
 
   def initialize(sales_tax, import_duty)
     @sales_tax = sales_tax
     @import_duty = import_duty
-    @sub_total = 0
+    @sub_total
     @this = self
   end
 
-  def calculate_taxes
-    @this.sales_tax = item_sales_tax
-    @this.import_duty = item_import_duty
-    @this.sub_total = price_after_taxes
+  def price_after_taxes
+    @this.sub_total = (@this.price.to_f + @this.sales_tax.to_f + @this.import_duty.to_f)
   end
 
   private
 
   def item_import_duty
-    (@this.price * @import_duty).to_f if @this.imported.eql? 'yes'
+    @this.imported.eql? IMPORTED ? (@this.price * @import_duty).to_f : 0.0
   end
 
   def item_sales_tax
-    (@this.price * @sales_tax).to_f if @this.exempted.eql? 'no'
-  end
-
-  def price_after_taxes
-    (@this.price.to_f + @this.sales_tax.to_f + @this.import_duty.to_f)
+    @this.exempted.eql? EXEMPTED ? (@this.price * @sales_tax).to_f : 0.0
   end
 end
 # Public - for taking input and prompting
@@ -83,7 +79,7 @@ end
 
 add_more = 'y'
 input = UserInput.new(
-          '%10s %15s %15s %15s %15s', 
+          '%10s %15s %15s %15s %15s',
           '%-10s %15.2f %15.2f %15.2f %15.2f',
           '%69s %.2f'
         )
