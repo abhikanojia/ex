@@ -2,19 +2,25 @@
 # return hash having even an odd length strings
 # grouped
 class Array
-  def array_hash
+  def group_by_odd_even
+    output_hash = Hash.new([])
+    group_by_length.inject(output_hash) do |_, (key, value)|
+      key = if key.odd?
+        'odd'
+      else
+        'even'
+      end
+      output_hash[key] += [value]
+    end
+    output_hash
+  end
+
+  private
+
+  def group_by_length
     hash = Hash.new([])
     each { |item| hash[item.length] += [item] }
-    new_hash = hash.to_h
-    output = Hash.new([])
-    new_hash.inject(output) do |_, value|
-      if value[0].odd?
-        output['odd'] += [value[1]]
-      else
-        output['even'] = [value[1]]
-      end
-    end
-    output
+    hash
   end
 end
 # Method - to_array converts string style array to array values
@@ -28,5 +34,5 @@ if ARGV.first.nil?
   print 'Please provide an input'
 else
   arr = ARGV.first.to_array
-  puts arr.array_hash
+  puts arr.group_by_odd_even
 end
