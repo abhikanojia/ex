@@ -16,11 +16,13 @@ class Cart
     @total_amount
   end
 
-  def generate_bill
-    input = UserInput.new
-    @line_items.each do |key, _|
-      yield input.data_format % [key.name.to_s, key.sales_tax.to_f, key.import_duty.to_f,
-                                  key.price, key.sub_total.to_f]
+  def generate_bill 
+    @line_items.each do |item, _|
+      item_details = []
+      item_details << item.name.to_s << item.sales_tax.to_f
+      item_details << item.import_duty.to_f << item.price.to_f
+      item_details << item.sub_total.to_f
+      yield item_details
     end
   end
 end
@@ -30,41 +32,42 @@ class Product
   attr_accessor :name, :price, :imported, :exempted
   attr_accessor :sales_tax, :import_duty, :sub_total
 
-  def initialize
-    @sales_tax = 0.1
-    @import_duty = 0.05
+  def initialize(sales_tax, import_duty)
+    @sales_tax = sales_tax
+    @import_duty = import_duty
     @sub_total = 0
     @this = self
   end
 
   def calculate_taxes
-    @this.sales_tax = _sales_tax
-    @this.import_duty = _import_duty
-    @this.sub_total = total_taxes
+    @this.sales_tax = item_sales_tax
+    @this.import_duty = item_import_duty
+    @this.sub_total = price_after_taxes
   end
 
   private
 
-  def _import_duty
+  def item_import_duty
     (@this.price * @import_duty).to_f if @this.imported.eql? 'yes'
   end
 
-  def _sales_tax
+  def item_sales_tax
     (@this.price * @sales_tax).to_f if @this.exempted.eql? 'no'
   end
 
-  def total_taxes
+  def price_after_taxes
     (@this.price.to_f + @this.sales_tax.to_f + @this.import_duty.to_f)
   end
 end
 # Public - for taking input and prompting
 # messages to user
 class UserInput
-  attr_reader :header_format, :data_format
+  attr_reader :header_format, :data_format, :total_format
 
-  def initialize
-    @header_format = '%10s %15s %15s %15s %15s'
-    @data_format = '%-10s %15.2f %15.2f %15.2f %15.2f'
+  def initialize(header_format, data_format, total_format)
+    @header_format = header_format
+    @data_format = data_format
+    @total_format = total_format
   end
 
   def prompt_messages
@@ -74,21 +77,21 @@ class UserInput
   end
 
   def headers
-    ['Item Name |', 'Sales Tax |', 'Duty Tax |', 'Price |', 'Total Amount |']
-  end
-
-  def total_format
-    '%69s %.2f'
+    ['Item Name', 'Sales Tax', 'Duty Tax', 'Price', 'Total Amount']
   end
 end
 
 add_more = 'y'
-input = UserInput.new
+input = UserInput.new(
+          '%10s %15s %15s %15s %15s', 
+          '%-10s %15.2f %15.2f %15.2f %15.2f',
+          '%69s %.2f'
+        )
 prompt = input.prompt_messages
 line_items = Cart.new
 
 while add_more == 'y'
-  product = Product.new
+  product = Product.new(0.1, 0.05)
   print prompt.next
   product.name = gets.chomp
   print prompt.next
@@ -103,10 +106,10 @@ while add_more == 'y'
   add_more = gets.chomp
 end
 puts
-puts input.header_format % input.headers
+puts input.header_format % input.headers.map { |header|  header << " |" }
 puts '-' * 80
 line_items.generate_bill do |data|
-  puts data
+  puts input.data_format % data
   puts '-' * 80
 end
 puts input.total_format % ['Total Amount:', " #{line_items.total_bill}"]
