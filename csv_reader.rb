@@ -2,17 +2,24 @@
 require 'csv'
 # Public - Method process for processing input file
 class String
-  def process
+  def pluralize
+    self << 's'
+  end
+end
+# for writting in another format
+class CSVreader
+  def initialize(filename, output_file)
+    @filename = filename
     @designation_group = Hash.new([])
+    @output_file = output_file
+  end
+
+  def process
     @new_hash = Hash.new([])
-    CSV.foreach(self, headers: true) do |row|
+    CSV.foreach(@filename, headers: true) do |row|
       @designation_group[row[2].strip] += [row[0].strip + "(EmpId: #{row[1]})"]
     end
     create_hash_group
-  end
-
-  def pluralize
-    self << 's'
   end
 
   private
@@ -28,7 +35,7 @@ class String
   end
 
   def write_in_another_format
-    File.open('employees.txt', 'w+') do |file|
+    File.open(@output_file, 'w+') do |file|
       @new_hash.each do |key, _|
         file.puts key.to_s
         @new_hash[key].each do |val|
@@ -41,5 +48,6 @@ class String
 end
 
 puts 'Processing....'
-'employees.csv'.process
-print 'File is ready to be used'
+reader = CSVreader.new('employees.csv', 'employee.txt')
+reader.process
+puts 'File is ready to be used'
