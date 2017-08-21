@@ -4,29 +4,30 @@ class Cart
   attr_reader :line_items
   def initialize
     @line_items = []
-    @total_amount = 0
   end
 
-  def push(product)
-    @line_items << product
+  def add(product)
+    @line_items.push(product)
   end
 
-  def total_bill
-    @line_items.inject(0) { |sum, item| sum + item.sub_total }
+  def items_total
+    line_items.inject(0) do |sum, item|
+      sum + item.sub_total
+    end
   end
 end
+
 # Product class - Holds Produc information and
 # calculates related taxes
 class Product
-  IMPORTED = 'yes'
-  EXEMPTED = 'no'
+  IMPORTED = 'yes'.freeze
+  EXEMPTED = 'no'.freeze
   attr_accessor :name, :price, :imported, :exempted
   attr_accessor :sales_tax, :import_duty, :sub_total
 
   def initialize(sales_tax, import_duty)
     @sales_tax_on_all = sales_tax
     @import_duty_on_all = import_duty
-    @sub_total
     @this = self
   end
 
@@ -46,33 +47,23 @@ class Product
     @this.exempted == EXEMPTED ? (@this.price * @sales_tax_on_all).to_f : 0.0
   end
 end
-# Public - for taking input and prompting
-# messages to user
-class Output
-  attr_reader :header_format, :data_format, :total_format
 
-  def initialize(header_format, data_format, total_format)
-    @header_format = header_format
-    @data_format = data_format
-    @total_format = total_format
-  end
-
-  def headers
-    ['Item Name', 'Sales Tax', 'Duty Tax', 'Price', 'Total Amount']
-  end
-end
 # takes input from user
 class Input
-  attr_accessor :next_product
+  NAME = 'Name of the product: '.freeze
+  IMPORTED = 'Imported?:(yes/no) '.freeze
+  EXEMPTED = 'Extempted from sales tax?:(yes/no) '.freeze
+  PRICE = 'Price: '.freeze
+  ADD_MORE = 'Do you want to add more items to your list(y/n): '.freeze
 
-  def initialize
-    @add_more = 'y'
-    @cart = Cart.new
+  def initialize(cart, add_more = true)
+    @add_more = add_more
+    @cart = cart
   end
 
   def get_user_input
     prompt = messages
-    while @add_more.eql? 'y'
+    while @add_more
       product = Product.new(0.1, 0.05)
       print prompt.next
       product.name = gets.chomp
@@ -84,49 +75,100 @@ class Input
       product.price = gets.chomp.to_f
       puts prompt.next
       product.price_after_taxes
-      @cart.push(product)
-      @add_more = gets.chomp
+      @cart.add(product)
+      @add_more = add_more?(gets.chomp)
     end
   end
 
-  def generate_bill
-    @cart.line_items.each do |item, _|
-      item_details = []
-      item_details << item.name.to_s << item.sales_tax.to_f
-      item_details << item.import_duty.to_f << item.price.to_f
-      item_details << item.sub_total.to_f
-      yield item_details
-    end
-  end
-
-  def total_bill
-    @cart.total_bill
-  end
-  
   private
 
+  def add_more?(value)
+    value == 'y' ? true : false
+  end
+
   def messages
-    ['Name of the product: ', 'Imported?',
-      'Extempted from sales tax?', 'Price:',
-      'Do you want to add more items to your list(y/n):'].cycle
+    [NAME, IMPORTED, EXEMPTED, PRICE, ADD_MORE].cycle
+  end
+end
+# for generating bill
+class Invoice
+  HEADER_FORMAT = '%10s %15s %15s %15s %15s'.freeze
+  DATA_FORMAT = '%-10s %15.2f %15.2f %15.2f %15.2f'.freeze
+  TOTAL_FORMAT = '%68s %.2f'.freeze
+  TOTAL = 'Total Amount:'.freeze
+  HEADER = ['Item Name', 'Sales Tax', 'Duty Tax', 'Price', 'Total Amount'].freeze
+
+  def initialize(cart, print_format = {})
+    default = {
+      header_format: HEADER_FORMAT,
+      data_format: DATA_FORMAT,
+      total_format: TOTAL_FORMAT
+    }
+    @print_format = default.merge(print_format)
+    @cart = cart
+  end
+
+  def items
+    @cart.line_items.each do |item, _|
+      item_details = []
+      item_details.push(
+        item.name.to_s, item.sales_tax.to_f,
+        item.import_duty.to_f, item.price.to_f,
+        item.sub_total.to_f
+      )
+      yield @print_format[:data_format] % item_details
+    end
+  end
+
+  def print_header
+    @print_format[:header_format] % headers.map { |header| header << ' |' }
+  end
+
+  def next_line
+    '-' * 75
+  end
+
+  def total_bill_amount
+    format(@print_format[:total_format].to_s, TOTAL, @cart.items_total)
+  end
+
+  private
+
+  def headers
+    HEADER
   end
 end
 
-user_input = Input.new
+# new cart to be passed as to input class
+cart = Cart.new
+
+# Input class takes 2 parameters
+# first: add_more -> boolean to start adding
+# second: cart object
+user_input = Input.new(cart, true)
+
+# get_user_input will start taking input from user
 user_input.get_user_input
 
-output = Output.new
-       (
-          '%10s %15s %15s %15s %15s',
-          '%-10s %15.2f %15.2f %15.2f %15.2f',
-          '%69s %.2f'
-        )
+# invoice Class takes 4 parameters
+# cart object, 'header_format','items format' and 'total format'
+# of the invoice,
+parameters = {
+  header_format: '%10s %15s %15s %15s %17s',
+  data_format: '%-10s %15.2f %15.2f %15.2f %15.0f'
+}
+invoice = Invoice.new(cart, parameters)
 
 puts
-puts output.header_format % output.headers.map { |header|  header << " |" }
-puts '-' * 75
-user_input.generate_bill do |data|
-  puts output.data_format % data
-  puts '-' * 75
+# prints header to console
+puts invoice.print_header
+# prints separator
+puts invoice.next_line
+
+# print line items
+invoice.items do |data|
+  puts data
+  puts invoice.next_line
 end
-puts output.total_format % ['Total Amount:', " #{user_input.total_bill}"]
+# prints total amount bill using provided format
+puts invoice.total_bill_amount

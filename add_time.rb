@@ -2,9 +2,9 @@ require 'time'
 require 'date'
 # time class
 class Time
-  def add(arg)
-    @time1 = arg.delete(arg.first)
-    @result_time = arg.inject(@t1) do |sum, time|
+  def add(time_array)
+    @time_first = time_array.delete(time_array.first)
+    @result_time = time_array.inject(@time_first) do |sum, time|
       sum + time.hour * 3600 + time.min * 60 + time.sec
     end
     print_formatted
