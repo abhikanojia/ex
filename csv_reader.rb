@@ -26,7 +26,7 @@ class CSVReader
     @designation_group = Hash.new([])
     @output_file = output_file
     @employees = []
-    @pluralized_hash = Hash.new([])
+    # @pluralized_hash = Hash.new([])
   end
 
   def process
@@ -35,7 +35,8 @@ class CSVReader
       new_employee = Employee.new(arr[0], arr[1].to_i, arr[2].chop.lstrip)
       @designation_group[row[2].strip] += [new_employee.name.strip + "(EmpId: #{new_employee.empid})"]
     end
-    create_hash_group_and_write_to_file
+    @designation_group
+    #create_hash_group_and_write_to_file
   end
 
   private
@@ -65,5 +66,5 @@ end
 
 puts 'Processing....'
 reader = CSVReader.new('employees.csv', 'employees.txt')
-reader.process
-puts 'File is ready to be used'
+print reader.process
+# puts 'File is ready to be used'

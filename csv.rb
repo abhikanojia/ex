@@ -1,3 +1,10 @@
+# Public - Method process for processing input file
+class String
+  def pluralize
+    self << 's'
+  end
+end
+# employee
 class Employee
   attr_reader :name, :empid, :desig
   def initialize(name, empid, desig)
@@ -10,22 +17,28 @@ class Employee
     "Name: #{name} Employee id: #{empid} and Designation: #{desig}"
   end
 end
-
-class CSVreader
+require 'csv'
+class CSVReader
   attr_accessor :data
 
   def initialize(filename)
     @file = filename
     @employees = []
-    @data = []
   end
 
   def read_data
-    require 'csv'
-    CSV.foreach(@file, headers: true) do |row|
-      arr = row.to_s.split(',')
-      @employees << Employee.new(arr[0], arr[1].to_i, arr[2].chop.lstrip)
-    end
+   data_array  = CSV.read(@file, headers: true)
+   data_array.group_by { |i| i['Designation'] }.each do |key, value|
+    # key.pluralize if key.value.length > 1
+    # puts key << 's' if
+    p key.value
+   end 
+    # CSV.read(@file, headers: true) do |row|
+    #   p row
+    #   #@employees << Employee.new(row[0], row[1].to_i, row[2])
+    #   # @employees << Employee.new(arr[0], arr[1].to_i, arr[2].chop.lstrip)
+    # end
+   # @employees
   end
 
   def emps
@@ -37,6 +50,6 @@ class CSVreader
   end
 end
 
-reader = CSVreader.new('employees.csv')
-reader.read_data
-reader.emps
+reader = CSVReader.new('employees.csv')
+print reader.read_data
+# reader.emps

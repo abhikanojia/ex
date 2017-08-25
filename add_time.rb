@@ -1,27 +1,15 @@
 require 'time'
-require 'date'
 # time class
 class Time
   def add(time_array)
-    @time_first = time_array.delete(time_array.first)
-    @result_time = time_array.inject(@time_first) do |sum, time|
+    time_first = time_array.delete(time_array.first)
+    time_array.inject(time_first) do |sum, time|
       sum + time.hour * 3600 + time.min * 60 + time.sec
     end
-    print_formatted
   end
 
-  private
-
-  def no_of_days
-    @result_time.day - @t1.day
-  end
-
-  def print_formatted
-    if no_of_days >= 1
-      "#{no_of_days} day & #{@result_time.strftime('%H:%M:%S')}"
-    else
-      "#{@result_time.strftime('%H:%M:%S')}"
-    end
+  def diff_in_no_of_days
+    self.day - Time.now.day
   end
 end
 
@@ -31,9 +19,18 @@ else
   time_array = []
   begin
     ARGV.each { |time_str| time_array.push(Time.parse(time_str)) }
+    result_time = Time.new.add(time_array)
+
+    no_of_extra_days = result_time.diff_in_no_of_days
+    
+    if no_of_extra_days >= 1
+      print "\"#{no_of_extra_days} day & #{result_time.strftime('%H:%M:%S')}\""
+    else
+      print "\"#{result_time.strftime('%H:%M:%S')}\""
+    end
+
   rescue ArgumentError
     print "\"Invalid 24-hour time value\""
     exit
-  end  
-  print "\"#{Time.new.add(time_array)}\""
+  end
 end

@@ -1,41 +1,37 @@
-# Public -Method sum_time for
-# adding time given
+require 'time'
+# time class
 class Time
-  def initialize
-    @total_hours, @total_minutes, @total_seconds = 0, 0, 0
-  end
-
-  def sum_time(time_arr)
-    time_arr.each do |time|
-      return 'Invalid 24-hour time value' if validate(time).nil?
-      hours, minutes, seconds = time.split(':')
-      @total_seconds += seconds.to_i
-      @total_minutes += minutes.to_i
-      @total_hours   += hours.to_i
-      extra_time
+  HOUR_CONVERSION = 3600
+  MIN_CONVERSION = 60
+  TIME_FORMAT = '%H:%M:%S'.freeze
+  def add(time_array)
+    time_first = time_array.delete(time_array.first)
+    time_array.inject(time_first) do |sum, time|
+      sum + time.hour * HOUR_CONVERSION + time.min * MIN_CONVERSION + time.sec
     end
-    [(@total_hours % 24).to_s, @total_minutes.to_s, @total_seconds.to_s]
   end
 
-  private
-
-  def validate(time)
-    pattern = /(^[0|1]?[0-9]|2[0-3]):[0-5]?[0-9]:[0-5]?[0-9]/
-    true if pattern.match?(time)
+  def diff_in_no_of_days
+    day - Time.now.day
   end
 
-  def extra_time
-    extra_minutes, @total_seconds = @total_seconds.divmod(60)
-    @total_minutes += extra_minutes
-    extra_hours, @total_minutes = @total_minutes.divmod(60)
-    @total_hours += extra_hours
+  def self.print_formatted(time, no_of_extra_days)
+    time = "\"#{time.strftime(TIME_FORMAT)}\""
+    no_of_extra_days >= 1 ? "\"#{no_of_extra_days} day & #{time}\"" : time
   end
 end
 
-if ARGV.empty?
+if ARGV.first.nil?
   print 'Please provide an input'
 else
-  object = Time.new
-  time = object.sum_time(ARGV)
-  print format('%02d:%02d:%02d', time[0], time[1], time[2])
+  time_array = []
+  begin
+    ARGV.each { |time_str| time_array.push(Time.parse(time_str)) }    
+    result_time = Time.new.add(time_array)    
+    no_of_extra_days = result_time.diff_in_no_of_days
+    print Time.print_formatted(result_time, no_of_extra_days)
+  rescue ArgumentError
+    print "\"Invalid 24-hour time value\""
+    exit
+  end
 end
