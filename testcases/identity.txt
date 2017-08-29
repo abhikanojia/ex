@@ -1,0 +1,8 @@
+name_blank ,entity_blank ,attr_blank
+name_blank ,entity_blank ,attr_not_blank
+name_blank ,entity_not_blank ,attr_blank
+name_blank ,entity_not_blank ,attr_not_blank
+name_not_blank ,entity_blank ,attr_blank
+name_not_blank ,entity_blank ,attr_not_blank
+name_not_blank ,entity_not_blank ,attr_blank
+name_not_blank ,entity_not_blank ,attr_not_blank

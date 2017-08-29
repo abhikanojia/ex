@@ -1,0 +1,8 @@
+name_valid ,identity_selected ,external_identifier_valid
+name_valid ,identity_selected ,external_identifier_invalid
+name_valid ,identity_not_selected ,external_identifier_valid
+name_valid ,identity_not_selected ,external_identifier_invalid
+name_invalid ,identity_selected ,external_identifier_valid
+name_invalid ,identity_selected ,external_identifier_invalid
+name_invalid ,identity_not_selected ,external_identifier_valid
+name_invalid ,identity_not_selected ,external_identifier_invalid

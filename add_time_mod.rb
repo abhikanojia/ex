@@ -15,8 +15,8 @@ class Time
 
   def self.print_formatted(time)
     no_of_extra_days = time.diff_in_no_of_days
-    time = "#{time.strftime(TIME_FORMAT)}"
-    no_of_extra_days >= 1 ? "#{no_of_extra_days} day & #{time}" : time
+    time_str = time.strftime(TIME_FORMAT)
+    no_of_extra_days >= 1 ? "#{no_of_extra_days} day & #{time_str}" : time_str
   end
 end
 
@@ -28,7 +28,6 @@ else
     time_b = Time.parse(ARGV[1])
     result_time = Time.new.add(time_a, time_b)
     print "\"#{Time.print_formatted(result_time)}\""
-
   rescue ArgumentError
     print "\"Invalid 24-hour time value\""
     exit

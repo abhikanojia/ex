@@ -1,7 +1,8 @@
+require 'csv'
 # Public - Method process for processing input file
 class String
   def pluralize
-    self << 's'
+    dup << 's'
   end
 end
 # employee
@@ -17,39 +18,32 @@ class Employee
     "Name: #{name} Employee id: #{empid} and Designation: #{desig}"
   end
 end
-require 'csv'
+# csv read write class
 class CSVReader
-  attr_accessor :data
-
   def initialize(filename)
     @file = filename
-    @employees = []
   end
 
   def read_data
-   data_array  = CSV.read(@file, headers: true)
-   data_array.group_by { |i| i['Designation'] }.each do |key, value|
-    # key.pluralize if key.value.length > 1
-    # puts key << 's' if
-    p key.value
-   end 
-    # CSV.read(@file, headers: true) do |row|
-    #   p row
-    #   #@employees << Employee.new(row[0], row[1].to_i, row[2])
-    #   # @employees << Employee.new(arr[0], arr[1].to_i, arr[2].chop.lstrip)
-    # end
-   # @employees
+    employees = []
+    CSV.foreach(@file, headers: true) do |row|
+      employee = Employee.new(row[0], row[1].strip, row[2].strip)
+      employees.push(employee)
+    end
+    employees.group_by(&:desig)
   end
 
-  def emps
-    file = File.open('newformat_emp.txt','w')
-    @employees.sort_by { |obj| obj.desig }.each do |emp|
-      @data[emp.desig.to_s] = emp.name
+  def write_in_other_format(emp_hash, output_file = 'employees.txt')
+    file = File.open(output_file, 'w')
+    emp_hash.sort.to_h.each do |key, value|
+      key = key.pluralize if value.length > 1
+      file.puts key
+      value.each { |emp| file.puts "#{emp.name} EmpId: (#{emp.empid})" }
+      file.puts
     end
-    print @data
   end
 end
 
 reader = CSVReader.new('employees.csv')
-print reader.read_data
-# reader.emps
+employee_hash = reader.read_data
+reader.write_in_other_format(employee_hash, 'employees.txt')
