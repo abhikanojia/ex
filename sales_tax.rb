@@ -120,6 +120,18 @@ class Invoice
     end
   end
 
+  def print_data
+    yield print_header
+    yield next_line
+    items do |data|
+      yield data
+    end
+    yield next_line
+    yield total_bill_amount
+  end
+
+  private
+
   def print_header
     @print_format[:header_format] % headers.map { |header| header << ' |' }
   end
@@ -132,43 +144,25 @@ class Invoice
     format(@print_format[:total_format].to_s, TOTAL, @cart.items_total)
   end
 
-  private
-
   def headers
     HEADER
   end
 end
 
-# new cart to be passed as to input class
+
 cart = Cart.new
 
-# Input class takes 2 parameters
-# first: add_more -> boolean to start adding
-# second: cart object
 user_input = Input.new(cart, true)
 
-# get_user_input will start taking input from user
 user_input.get_user_input
 
-# invoice Class takes 4 parameters
-# cart object, 'header_format','items format' and 'total format'
-# of the invoice,
 parameters = {
   header_format: '%10s %15s %15s %15s %17s',
   data_format: '%-10s %15.2f %15.2f %15.2f %15.0f'
 }
 invoice = Invoice.new(cart, parameters)
 
-puts
-# prints header to console
-puts invoice.print_header
-# prints separator
-puts invoice.next_line
-
-# print line items
-invoice.items do |data|
+invoice.print_data do |data|
   puts data
-  puts invoice.next_line
 end
-# prints total amount bill using provided format
-puts invoice.total_bill_amount
+

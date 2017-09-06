@@ -15,7 +15,7 @@ class Employee
   end
 
   def to_s
-    "Name: #{name} Employee id: #{empid} and Designation: #{desig}"
+    "#{name} (EmpId: #{empid})"
   end
 end
 # csv read write class
@@ -25,20 +25,19 @@ class CSVReader
   end
 
   def read_data
-    employees = []
+    employees = Hash.new([])
     CSV.foreach(@file, headers: true) do |row|
-      employee = Employee.new(row[0], row[1].strip, row[2].strip)
-      employees.push(employee)
+      employees[row['Designation'].strip] += [Employee.new(row['Name'], row['EmpId'].strip, row['Designation'].strip)]
     end
-    employees.group_by(&:desig)
+    employees
   end
 
   def write_in_other_format(emp_hash, output_file = 'employees.txt')
     file = File.open(output_file, 'w')
-    emp_hash.sort.to_h.each do |key, value|
-      key = key.pluralize if value.length > 1
-      file.puts key
-      value.each { |emp| file.puts "#{emp.name} EmpId: (#{emp.empid})" }
+    emp_hash.keys.sort.each do |key|
+      pluralize_key = key.pluralize if emp_hash[key].length > 1
+      file.puts pluralize_key || key
+      emp_hash[key].each { |emp| file.puts emp }
       file.puts
     end
   end
