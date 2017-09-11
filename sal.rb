@@ -6,7 +6,7 @@ class Product
   @@product_id = 0
 
   def initialize(product)
-    @id = product[:id] = @@product_id.succ
+    @id = product[:id] = @@product_id += 1
     
     @name = product[:name]
     
@@ -54,12 +54,13 @@ class Cart
   end
 
   def add(product)
-    @items.push(product)
+    @items.push(product.hash)
   end
 
-  def remove(id = "")
-    return @items.pop if id.empty?
+  def remove(id = nil)
+    return @items.pop if id.nil?
     @items.each { |item| item.clear if item[:_id].eql? id }
+    @items.delete_if(&:empty?)
   end
 
   def items
@@ -80,6 +81,12 @@ end
 
 class Input
 
+  NAME = 'Name of the product: '.freeze
+  IMPORTED = 'Imported?:(yes/no) '.freeze
+  EXEMPTED = 'Extempted from sales tax?:(yes/no) '.freeze
+  PRICE = 'Price: '.freeze
+  ADD_MORE = 'Do you want to add more items to your list(y/n): '.freeze
+  
   def initialize
     
   end
@@ -87,10 +94,15 @@ end
 
 product_details = { name: "choco", price: 120, has_import_duty: true, has_sales_tax: true }
 product_2 = { name: "potato", price: 100, has_import_duty: true }
+
 p1 = Product.new(product_details)
 p2 = Product.new(product_2)
 cart = Cart.new
-cart.add(p1.hash)
-cart.add(p2.hash)
+cart.add(p1)
+cart.add(p2)
+
 p cart.items
 p cart.get_total
+
+p cart.remove
+p cart.items
