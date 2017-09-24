@@ -21,7 +21,7 @@ class Movie
   end
 
   def self.all
-    @@movies_list.select { |x| x if x.blockbuster? }    
+    @@movies_list.select { |x| x if x.blockbuster? }
   end
 
   def self.count
@@ -32,26 +32,18 @@ end
 
 
 # Hollywood class
-class Hollywood < Movie 
+class Hollywood < Movie
   def self.all
     @@movies_list.select { |x| x.class.to_s.eql? "Hollywood" }
-  end
-
-  def blockbuster?
-    super
   end
 end
 
 
 # Bollywood class
 class Bollywood < Movie
-  
+
   def self.all
     @@movies_list.select { |x| x.class.to_s.eql? "Bollywood" }
-  end
-
-  def blockbuster?
-    super
   end
 
   def bollywood?
@@ -77,12 +69,12 @@ puts b.blockbuster?
 puts "-" * 10
 
 # print all hollywood
-p Hollywood.all 
+p Hollywood.all
 
 puts "-" * 10
 
 # print all bollywood
-p Bollywood.all 
+p Bollywood.all
 
 
 puts "-" * 10

@@ -1,15 +1,15 @@
 # product class
 class Product
-  
+
   attr_accessor :name, :price, :sales_tax, :import_duty
 
   @@product_id = 0
 
   def initialize(product)
     @id = product[:id] = @@product_id += 1
-    
+
     @name = product[:name]
-    
+
     @price = product[:price].to_f
 
     @sales_tax = default_sales_tax(product)
@@ -30,11 +30,11 @@ class Product
   end
 
   def hash
-    { 
-      _id: @id, 
-      name: @name, 
-      price: @price, 
-      sales_tax: @sales_tax, 
+    {
+      _id: @id,
+      name: @name,
+      price: @price,
+      sales_tax: @sales_tax,
       import_duty: @import_duty,
       subtotal: subtotal
     }
@@ -44,7 +44,7 @@ end
 
 # Cart class
 class Cart
-  
+
   def initialize
     @items = []
   end
@@ -73,9 +73,9 @@ class Cart
 end
 
 class Invoice
-  
+
   def initialize
-    
+
   end
 end
 
@@ -86,9 +86,9 @@ class Input
   EXEMPTED = 'Extempted from sales tax?:(yes/no) '.freeze
   PRICE = 'Price: '.freeze
   ADD_MORE = 'Do you want to add more items to your list(y/n): '.freeze
-  
+
   def initialize
-    
+
   end
 end
 

@@ -8,4 +8,4 @@ class A
 end
 
 A.new.abc
-A.ancestors
+p A.ancestors
