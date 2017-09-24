@@ -1,22 +1,26 @@
+# method for converting string operator to operator symbol
 class String
   def to_operator_symbol
-    delete(":").to_sym
+    delete(':').to_sym
   end
 end
-
+# Calculator class
 class Calculator
-  def initialize(string)
-    @expression = string.split(',')
+  def initialize(input)
+    expression = input.split(',')
+    @operand1 = expression.first.to_f
+    @operand2 = expression.last.to_f
+    @operator = expression[1].to_operator_symbol
   end
 
   def calculate
-    [@expression.first.to_i, @expression.last.to_i].inject(@expression[1].to_operator_symbol)
+    @operand1.send(@operator, @operand2)
   end
 end
 
-if $*.empty?
+if ARGV.empty?
   print 'Please provide an input'
 else
-  object = Calculator.new($*.first)
+  object = Calculator.new(ARGV.first)
   puts object.calculate
 end
