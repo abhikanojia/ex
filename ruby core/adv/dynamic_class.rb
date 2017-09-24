@@ -1,16 +1,7 @@
-# method that return whether first letter capital or not
-class String
-  def first_not_capital?
-    return true if chars.first.upcase != self[0]
-    false
-  end
-end
-
 # Dynamic Class generator class
 class DynamicClass
-
   def initialize(class_name)
-    class_name.capitalize! if class_name.first_not_capital?
+    class_name.capitalize!
     @class_name = Class.new
     Object.const_set(class_name, @class_name)
   end
@@ -26,8 +17,7 @@ class DynamicClass
   end
 end
 
-
-#take input from user
+# take input from user
 
 print 'Please enter the class name: '
 class_name = gets.chomp
@@ -41,9 +31,9 @@ method_body = gets.chomp
 my_class = DynamicClass.new(class_name)
 my_class.def_method(method_name, method_body)
 
-
 puts '--- Result ---'
-print "Hello, your class #{class_name} with method #{method_name} is ready. Calling:"\
-      "#{class_name}.new.#{method_name}"
+print "Hello, your class #{class_name} with method #{method_name} is ready."\
+      " Calling: #{class_name}.new.#{method_name}\n"
 
 puts my_class.call(method_name)
+
