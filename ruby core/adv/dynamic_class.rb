@@ -1,43 +1,57 @@
+# error class
+class ClassRedefinitionError < StandardError; end
+
+# String class method to check whether class exist by given string
+class String
+
+  def already_exists?
+    Object.constants.include? to_sym
+  end
+end
+
 # Dynamic Class generator class
 class DynamicClass
-  def initialize(class_name)
-    class_name.capitalize!
-    raise 'Class Name already exists' if already_exists? class_name.to_sym
-    @class_name = Class.new
-    Object.const_set(class_name, @class_name)
+
+  def initialize(input_class_name)
+    validate(input_class_name.capitalize! || input_class_name)
+    @class_name = Class.new { Object.const_set(input_class_name, self) }
   end
 
-  def def_method(method_name, method_body)
+  def create_method(method_name, method_body)
     @class_name.class_eval do
       define_method(method_name) { instance_eval(method_body) }
     end
   end
 
-  def already_exists?(class_name)
-    Object.constants.include? class_name
+  def validate(class_name)
+    raise ClassRedefinitionError if class_name.already_exists?
+  rescue => e
+    print "#{e} : #{class_name} class already exists in ruby. Exiting..\n"
+    exit
   end
 
-  def call(method_name)
-    @class_name.new.send(method_name)
+  def call_method(method_name)
+    @class_name.new.public_send(method_name)
   end
 end
 
 # take input from user
 
 print 'Please enter the class name: '
-class_name = gets.chomp
+name_of_class = gets.chomp
+
+dynamic_class = DynamicClass.new(name_of_class)
 
 print 'Please enter the method name you wish to define: '
-method_name = gets.chomp
+name_of_method = gets.chomp
 
-print "Please enter the method's code: "
-method_body = gets.chomp
+print "Please enter the method's code in quotes: "
+body_of_method = gets.chomp
 
-my_class = DynamicClass.new(class_name)
-my_class.def_method(method_name, method_body)
+dynamic_class.create_method(name_of_method, body_of_method)
 
 puts '--- Result ---'
-print "Hello, your class #{class_name} with method #{method_name} is ready."\
-      " Calling: #{class_name}.new.#{method_name}\n"
+print "Hello, your class #{name_of_class} with method #{name_of_method} is ready."\
+      " Calling: #{name_of_class}.new.#{name_of_method}\n"
 
-puts my_class.call(method_name)
+puts dynamic_class.call_method(name_of_method)
