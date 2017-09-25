@@ -2,6 +2,7 @@
 class DynamicClass
   def initialize(class_name)
     class_name.capitalize!
+    raise 'Class Name already exists' if already_exists? class_name.to_sym
     @class_name = Class.new
     Object.const_set(class_name, @class_name)
   end
@@ -10,6 +11,10 @@ class DynamicClass
     @class_name.class_eval do
       define_method(method_name) { instance_eval(method_body) }
     end
+  end
+
+  def already_exists?(class_name)
+    Object.constants.include? class_name
   end
 
   def call(method_name)
@@ -36,4 +41,3 @@ print "Hello, your class #{class_name} with method #{method_name} is ready."\
       " Calling: #{class_name}.new.#{method_name}\n"
 
 puts my_class.call(method_name)
-
