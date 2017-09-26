@@ -9,4 +9,4 @@ class Demo
 end
 
 ob = Demo.new(11)
-print ob.get_binding
+p eval "@secret", ob.get_binding

@@ -6,10 +6,10 @@ module Persistable
   module ClassMethods
     def find
       puts "iN find"
-      new
+      ne w
     end
   end
-  
+
   def save
     puts "In save"
   end

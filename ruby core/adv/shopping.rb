@@ -1,12 +1,15 @@
 # Shopping class
 class ShoppingList
   def initialize
-    @items = []
+    @items = {}
   end
 
   def add(product_name, product_quantity)
-    product = { name: product_name, quantity: product_quantity }
-    @items.push(product)
+    if @items.key? product_name
+      @items[product_name] += product_quantity
+    else
+      @items.store(product_name, product_quantity)
+    end
   end
 
   def items(&block)
@@ -22,5 +25,8 @@ s1 = ShoppingList.new
 
 s1.items do
   add('Toothpaste', 2)
-  add('Computer', 1)
+  add('Computer', 2)
+  add('Toothpaste', 1)
 end
+
+p s1.list_items

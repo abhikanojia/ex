@@ -8,6 +8,9 @@
 #   end
 # end
 
+def get_binding(command)
+  binding
+end
 input = true
 
 while input do
@@ -15,6 +18,7 @@ while input do
   if command == 'q'
     break
   else
-    p eval "command"
+    # p command
+    p eval "#{command}", get_binding(command)
   end
 end

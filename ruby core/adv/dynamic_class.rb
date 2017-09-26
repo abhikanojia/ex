@@ -1,17 +1,8 @@
 # error class
 class ClassRedefinitionError < StandardError; end
 
-# String class method to check whether class exist by given string
-class String
-
-  def already_exists?
-    Object.constants.include? to_sym
-  end
-end
-
 # Dynamic Class generator class
 class DynamicClass
-
   def initialize(input_class_name)
     validate(input_class_name.capitalize! || input_class_name)
     @class_name = Class.new { Object.const_set(input_class_name, self) }
@@ -24,9 +15,9 @@ class DynamicClass
   end
 
   def validate(class_name)
-    raise ClassRedefinitionError if class_name.already_exists?
-  rescue => e
-    print "#{e} : #{class_name} class already exists in ruby. Exiting..\n"
+    raise ClassRedefinitionError if const_defined? class_name
+  rescue => error
+    print "#{error} : #{class_name} class already exists in ruby. Exiting..\n"
     exit
   end
 
