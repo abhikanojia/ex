@@ -5,7 +5,7 @@ class ClassRedefinitionError < StandardError; end
 class DynamicClass
   def initialize(input_class_name)
     validate(input_class_name.capitalize! || input_class_name)
-    @class_name = Class.new { Object.const_set(input_class_name, self) }
+    @class_name = Class.new { const_set(input_class_name, self) }
   end
 
   def create_method(method_name, method_body)
@@ -15,7 +15,7 @@ class DynamicClass
   end
 
   def validate(class_name)
-    raise ClassRedefinitionError if const_defined? class_name
+    raise ClassRedefinitionError if Object.const_defined? class_name
   rescue => error
     print "#{error} : #{class_name} class already exists in ruby. Exiting..\n"
     exit
