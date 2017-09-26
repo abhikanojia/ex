@@ -23,8 +23,16 @@ class Color
   end
 end
 
+class ThreatLevel
+  def self.const_missing(name)
+    const_set(name, new)
+  end
+end
+
 puts Color::Red
 puts Color::Orange
 
-puts Color::Red == Color::Orange
-puts Color::Orange == Color::Orange
+# puts Color::Red == Color::Orange
+# puts Color::Orange == Color::Orange
+
+puts ThreatLevel::Orange != ThreatLevel::Red
