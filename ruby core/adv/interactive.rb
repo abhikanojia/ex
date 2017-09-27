@@ -1,35 +1,32 @@
+# Class Interpreter
 class InteractiveInterpreter
-  attr_reader :bind
-
-  def initialize(command)
-    @command = command
+  attr_reader :result
+  def initialize
+    @result
   end
-end
 
-class Object
-  def bindings
+  def get_binding
     binding
   end
+
+  def execute_command(current_binding, command)
+    @result = eval(command, current_binding)
+  end
+
+  def check_input(command)
+    command == 'q'
+  end
 end
 
-t = InteractiveInterpreter.new("a = 10")
+interpreter = InteractiveInterpreter.new
+current_binding = interpreter.get_binding
 
-# p eval "#{t.command}", t.bindings
-
-# p eval "a", t.get_binding
-
-p eval "a", t.bindings
-# p eval "a", t.bind
-
-# input = true
-
-# while input do
-#   command = gets.chomp
-#   if command == 'q'
-#     break
-#   else
-#     ob = InteractiveInterpreter.new(command)
-#     p ob.binding
-#     #p eval "#{command}", ob.binding
-#   end
-# end
+loop do
+  begin
+    command = gets.chomp
+    break if interpreter.check_input(command)
+    interpreter.execute_command(current_binding, command)
+    puts interpreter.result
+  rescue
+  end
+end
