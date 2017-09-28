@@ -1,35 +1,42 @@
 class MaxInclusionReached < StandardError; end
 
 module A
-  @@count = 0
-
-  def self.append_features(mod)
-    raise MaxInclusionReached if @@count. >= 5
-  rescue MaxInclusionReached
-    puts "Max number of Inclusion reached"
-  end
-
-  def self.included(klass)
-    @@count += 1 if @@count < 5
-  end
-
-  def self.extended(klass)
-    @@count += 1 if @@count < 5
+  @count = 0
+  ["included", "extended"].each do |method_name|
+    define_singleton_method(method_name) do |arg|
+      raise MaxInclusionReached, "Max Inclusion Reached" if @count >= 4
+      @count += 1
+    end
   end
 
   def self.count
-    @@count
-  end
-
-  def test
-    puts "As"
+    @count
   end
 end
 
-class B
+
+# class B
+#   include A
+# end
+
+
+class C
+  extend A
+end
+
+class D
   include A
 end
 
-p A.count
-p B.new.test
-p B.ancestors
+
+class E
+  extend A
+end
+
+
+class G
+  include A
+end
+
+
+puts A.count
