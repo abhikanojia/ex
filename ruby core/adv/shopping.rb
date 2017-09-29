@@ -1,19 +1,15 @@
 # Shopping class
 class ShoppingList
   def initialize
-    @items = {}
+    @items = Hash.new(0)
   end
 
   def add(product_name, product_quantity)
-    if @items.key? product_name
-      @items[product_name] += product_quantity
-    else
-      @items.store(product_name, product_quantity)
-    end
+    @items[product_name] += product_quantity
   end
 
   def items(&block)
-    instance_eval(&block)
+    block_given? ? instance_eval(&block) : abort('No Block given.. exiting..')
   end
 
   def list_items
