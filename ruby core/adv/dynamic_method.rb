@@ -12,12 +12,11 @@ class DynamicMethod < String
   end
 
   def call_method(method_name, *arg)
-   return public_send(method_name, *arg) if list_of_methods.include? method_name.to_sym
+    public_send(method_name, *arg) if list_of_methods.include? method_name.to_sym
    'No Method Exists by that name'
   rescue ArgumentError => e
     puts "Please provide argument to call #{method_name} function: "
-    args = gets.chomp
-    call_method(method_name, *args)
+    call_method(method_name, gets.chomp)
   end
 end
 
@@ -35,7 +34,6 @@ puts
 
 puts 'Enter the name of method you want to execute from list'
 method_to_execute = gets.chomp
-puts
 
 
 # puts '-' * 20 + " Result " + '-' * 20

@@ -27,6 +27,8 @@ loop do
     break if interpreter.check_input(command)
     interpreter.execute_command(current_binding, command)
     puts interpreter.result
-  rescue
+  rescue Exception => error
+    puts "#{error}"
+    retry
   end
 end
