@@ -28,7 +28,7 @@ loop do
     interpreter.execute_command(current_binding, command)
     puts interpreter.result
   rescue Exception => error
-    puts "#{error}"
+    puts error.message
     retry
   end
 end
