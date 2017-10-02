@@ -5,10 +5,12 @@
 
 require 'csv'
 
+rows = []
 CSV.foreach('person.csv', headers: true) do |row|
-  print row['name']
+  rows << row
 end
 
+p rows
 # def print_data(row)
 #   row.each do |r|
 #     print r['name']

@@ -8,4 +8,8 @@ class CSVReader
     data = CSV.read(@csv_filename, headers: true)
     data.headers
   end
+
+  def collect_rows_object(rows)
+    CSV.foreach(@csv_filename) { |row| rows << row }
+  end
 end

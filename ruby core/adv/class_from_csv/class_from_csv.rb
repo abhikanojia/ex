@@ -13,32 +13,42 @@ require_relative 'directory_reader'
 # current directory instance
 current_directory = ReadDirectory.new('.')
 
+# array of row objects
+combined_rows = []
+
 # read all csv files in current directory
 current_directory.csv_files.each do |filename|
+
   csv = CSVReader.new(filename)
+
+  csv.collect_rows_object(combined_rows)
+
   dynamic_class = DynamicClassGenerator.new(filename, csv.read_headers)
+
   dynamic_class.define_method_in_class(csv.read_headers)
+
 end
 
 
 # Accessing data from generated classes
 customer = Person.new
 
-p Person.instance_methods(false)
+p combined_rows
+# p Person.instance_methods(false)
 
-customer.name
+# customer.name
 
-customer.age
+# customer.age
 
-customer.city
+# customer.city
 
-puts
+# puts
 
-shopping_items = Items.new
+# shopping_items = Items.new
 
-shopping_items.name
+# shopping_items.name
 
-shopping_items.availablity
+# shopping_items.availablity
 
 
-shopping_items.price
+# shopping_items.price
