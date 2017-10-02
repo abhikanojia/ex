@@ -1,55 +1,44 @@
+# include csv library
 require 'csv'
 
-class DynamicClassGenerator
-  def initialize(filename, headers)
-    @class_name = Class.new { const_set(filename, self) }
-    @headers = headers
-  end
+# include csv reader class
+require_relative 'csv_reader'
 
-  private
-  def define_class
-    @class_name.class_eval do
-    end
-  end
-end
+# include dynamic class creator
+require_relative 'dynamic_class'
 
+#include directory files reader
+require_relative 'directory_reader'
 
-class CSVReader
-  def initialize(csv_filename)
-    @csv_filename = csv_filename
-  end
+# current directory instance
+current_directory = ReadDirectory.new('.')
 
-  def read_headers
-    data = CSV.read(@csv_filename, headers: true)
-    data.headers
-  end
-end
-
-#
-class ReadDirectory
-  def initialize(dir_link)
-    @csv_files = []
-    @dir_link = dir_link
-    read_files
-  end
-
-  def csv_files
-    @csv_files
-  end
-
-  private
-
-  def read_files
-    Dir.foreach(@dir_link) do |filename|
-      next if filename == '.' || filename == '..'
-      @csv_files.push(filename) if File.extname(filename) == '.csv' && File.readable?(filename)
-    end
-  end
-end
-
-
-object = ReadDirectory.new('.')
-object.csv_files.each do |filename|
+# read all csv files in current directory
+current_directory.csv_files.each do |filename|
   csv = CSVReader.new(filename)
-  p csv.read_headers
+  dynamic_class = DynamicClassGenerator.new(filename, csv.read_headers)
+  dynamic_class.define_method_in_class(csv.read_headers)
 end
+
+
+# Accessing data from generated classes
+customer = Person.new
+
+p Person.instance_methods(false)
+
+customer.name
+
+customer.age
+
+customer.city
+
+puts
+
+shopping_items = Items.new
+
+shopping_items.name
+
+shopping_items.availablity
+
+
+shopping_items.price

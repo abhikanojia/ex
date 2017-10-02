@@ -5,5 +5,17 @@
 
 require 'csv'
 
-data = CSV.read('person.csv', headers: true)
-p data.headers
+CSV.foreach('person.csv', headers: true) do |row|
+  print row['name']
+end
+
+# def print_data(row)
+#   row.each do |r|
+#     print r['name']
+#   end
+# end
+
+
+# p data
+
+# print_data(data)

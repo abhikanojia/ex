@@ -9,6 +9,7 @@ class DynamicClass
   end
 
   def create_method(method_name, method_body)
+    p @class_name
     @class_name.class_eval do
       define_method(method_name) { instance_eval(method_body) }
     end
