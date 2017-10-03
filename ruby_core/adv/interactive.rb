@@ -5,15 +5,15 @@ class InteractiveInterpreter
     @result
   end
 
+  def execute_command(command, bind)
+    @result = eval(command, bind)
+  end
+
   def get_binding
     binding
   end
 
-  def execute_command(current_binding, command)
-    @result = eval(command, current_binding)
-  end
-
-  def check_input(command)
+  def quit?(command)
     command == 'q'
   end
 end
@@ -24,8 +24,8 @@ current_binding = interpreter.get_binding
 loop do
   begin
     command = gets.chomp
-    break if interpreter.check_input(command)
-    interpreter.execute_command(current_binding, command)
+    break if interpreter.quit?(command)
+    interpreter.execute_command(command, current_binding)
     puts interpreter.result
   rescue Exception => error
     puts error.message

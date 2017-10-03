@@ -1,4 +1,5 @@
 # dynamic class
+# change class name
 class DynamicMethod < String
   def replace_vowels_with(character)
     gsub(/[aeiou]/i, character)
@@ -26,6 +27,8 @@ class DynamicMethod < String
   end
 end
 
+# handle exception outside
+# print number of arguments required by function
 puts 'Please enter the string to call function on: '
 input_string = gets.chomp
 puts
