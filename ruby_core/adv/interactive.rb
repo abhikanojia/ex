@@ -1,6 +1,6 @@
 # Class Interpreter
 class InteractiveInterpreter
-  attr_reader :result
+  attr_accessor :result
   def initialize
     @result
   end
@@ -14,19 +14,23 @@ class InteractiveInterpreter
   end
 
   def quit?(command)
-    command == 'q'
+    command == "q\n"
   end
 end
 
 interpreter = InteractiveInterpreter.new
 current_binding = interpreter.get_binding
-
+command = ""
 loop do
   begin
-    command = gets.chomp
+    current_command = gets
     break if interpreter.quit?(command)
+    command << current_command
+    current_command.clear
     interpreter.execute_command(command, current_binding)
-    puts interpreter.result
+    if current_command == "\n"
+      interpreter.result
+      interpreter.result = ""
   rescue Exception => error
     puts error.message
     retry
