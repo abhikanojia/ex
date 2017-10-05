@@ -23,10 +23,62 @@
 
 # p method(:test).parameters.group_by { |x| x =~ /req/ }
 # p h
-a = binding
+# a = binding
 
-string = "a=1\n"
+# string = "a=1\n"
 
-eval string
+# eval string
 
-eval "p a"
+# eval "p a"
+
+# class A
+#   def test
+#     p self.class
+#     def another
+#       self.class
+#     end
+#   end
+# end
+
+# p A.new.test
+# p A.new.another
+
+
+# class A
+# end
+
+# ob = A.new
+# class << ob
+#   def  meth
+#     self.class
+#   end
+# end
+
+# p ob.singleton_class.instance_methods(false)
+
+# MyClass = Class.new(Array) do
+#   def my_method
+#     'Hello!'
+#   end
+# end
+
+# p MyClass.new.my_method
+
+
+class A
+  def test
+    p "test from #{self}"
+  end
+end
+
+class B < A; end
+
+ob = B.new
+
+class << ob
+  def te
+    puts "Asd"
+  end
+end
+
+ob.test
