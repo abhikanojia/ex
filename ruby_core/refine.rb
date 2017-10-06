@@ -29,7 +29,7 @@ module MyClassRefinement
 end
 
 class A
-  include MyClassRefinement
+  using MyClassRefinement
   def my_method
 
   end
