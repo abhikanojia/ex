@@ -1,6 +1,6 @@
 # Class Interpreter
 class InteractiveInterpreter
-  QUIT_REGEX = /^[q]$/
+  QUIT_REGEX = /^[q]$/i
 
   def execute_command(command)
     eval(command, TOPLEVEL_BINDING)
