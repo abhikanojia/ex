@@ -19,6 +19,7 @@ end
 
 s1 = ShoppingList.new
 
+
 s1.items do
   add('Toothpaste', 2)
   add('Computer', 2)

@@ -1,46 +1,27 @@
-# # Class Interpreter
-# class InteractiveInterpreter
-#   attr_reader :result
-#   def initialize
-#     @result
-#   end
+# Class Interpreter
+class InteractiveInterpreter
+  QUIT_REGEX = /q/i
 
-#   def get_binding
-#     binding
-#   end
+  def execute_command(command)
+    eval(command, TOPLEVEL_BINDING)
+  end
 
-#   def execute_command(current_binding, command)
-#     @result = eval(command, current_binding)
-#   end
-
-#   def quit?(command)
-#     command == "q"
-#   end
-# end
-
-# interpreter = InteractiveInterpreter.new
-# current_binding = interpreter.get_binding
-
-# loop do
-#   begin
-#     command = gets.chomp
-#     break if interpreter.quit?(command)
-#     interpreter.execute_command(current_binding, command)
-#     puts interpreter.result if gets == "\n"
-#   rescue Exception => error
-#     command << gets
-#   end
-# end
-
-command = ''
-loop do
-  text = gets
-  break if text == "q\n"
-  until text == "\n"
-    break if text == "q\n"
-    command << text
+  def quit?(command)
+    command.match? QUIT_REGEX
   end
 end
 
+interpreter = InteractiveInterpreter.new
 
-p eval command
+command = ''
+
+loop do
+  text = gets
+  break if interpreter.quit?(text.chomp)
+  command << text
+  if text == "\n"
+    p interpreter.execute_command(command)
+    command.clear
+  end
+  text.clear
+end
