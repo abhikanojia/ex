@@ -1,6 +1,6 @@
 # Class Interpreter
 class InteractiveInterpreter
-  QUIT_REGEX = /q/i
+  QUIT_REGEX = /^[q]$/
 
   def execute_command(command)
     eval(command, TOPLEVEL_BINDING)
@@ -17,11 +17,11 @@ command = ''
 
 loop do
   text = gets
-  break if interpreter.quit?(text.chomp)
+  chopped_text = text.chomp
+  break if interpreter.quit?(chopped_text)
   command << text
-  if text == "\n"
+  if chopped_text.empty?
     p interpreter.execute_command(command)
     command.clear
   end
-  text.clear
 end
