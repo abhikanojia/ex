@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+
+  <script>
+    i = 5
+  var a = function(){
+    var i = 5
+    return function(i){
+      i *= 5
+    }
+  }
+
+  var f = a();
+  console.log(f(5));
+  </script>
+</body>
+</html>

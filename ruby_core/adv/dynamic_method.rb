@@ -15,7 +15,6 @@ end
 
 # Interactive Class
 class InteractiveClass < String
-
   VOWELS = /[aeiou]/i
 
   def replace_vowels_with(character)
@@ -26,8 +25,8 @@ class InteractiveClass < String
     !(include? arg)
   end
 
-  def abx(a, b, c=1)
-    print a,b,c
+  def abx(a, b, c = 1)
+    print a, b, c
   end
 
   def list_of_methods
@@ -41,7 +40,6 @@ class InteractiveClass < String
   def params(method_name)
     self.method(method_name.to_sym).parameters.segregate
   end
-
 
   def execute(method_name, *arg)
     return public_send(method_name, *arg) if list_of_methods.include? method_name.to_sym
@@ -64,7 +62,6 @@ begin
   method_to_execute = gets.chomp
 
   p string.execute(method_to_execute)
-
 rescue ArgumentError => e
   params = string.params(method_to_execute)
 

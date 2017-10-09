@@ -69,20 +69,30 @@ class F
 
   validate_presence :fname
 
-  def self.test_meth(var)
-    p @list << var
+  def meth
+    # self.class.test_meth(self)
+    puts "method_name"
   end
 
-  def method_name
-    self.class.test_meth(self)
+  def self.test_meth(var)
+    # p @list << var
+    meth()
   end
 end
 
 f = F.new
 
-f.fname = "Abhishek"
-# F.test_meth
-f.method_name
+# f.fname = "Abhishek"
+p F.test_meth("Asd")
+# f.method_name
+
+# f.instance_eval do
+#   def fname_defined?
+#     @fname || false
+#   end
+# end
+
+# p f.fname_defined?
 
 # p B.valu
 # a = A.new

@@ -1,5 +1,4 @@
-class InvalidParameter < StandardError; end
-
+# Class Methods
 module ClassMethods
   def find_by_name(name)
     puts "find by name"
@@ -10,28 +9,43 @@ module ClassMethods
   end
 
   def validate_presence_of(*attributes)
-    puts "validate_presence_of"
     attributes.each do |attr|
-      define_method("#{attr}") do
-        instance_variable_defined?("@#{attr}")
+      validator_name = "#{attr}_defined?"
+      @method_names << validator_name
+      define_method(validator_name) do
+        if instance_variable_defined?("@#{attr}")
+          true
+        else
+          !errors.push("#{attr} not defined")
+        end
       end
     end
   end
 
   def collect
-    p @list
+    @list
   end
 
   def count
     @list.count
   end
+
+  def method_names
+    @method_names
+  end
 end
 
+# Object Store
 module MyObjectStore
   def self.included(class_name)
     class_name.extend(ClassMethods)
     class_name.class_eval do
       @list = []
+      @method_names = []
+
+      def initialize
+        @errors = []
+      end
 
       def self.push_object_to_list(obj)
         @list << obj
@@ -40,36 +54,38 @@ module MyObjectStore
   end
 
   def save
-    if validate
+    if validator
       self.class.push_object_to_list(self)
-      'Created'
+      'Saved Successfully'
     else
-      'Validation fails'
+      errors.each {|error| puts error }
     end
   end
 end
 
-class A
-  NAME = /^a/
+class Play
   include MyObjectStore
-  attr_accessor :fname, :lname
-  validate_presence_of :fname, :lname
+  attr_accessor :age, :fname, :errors, :method_names
+  validate_presence_of :age, :fname
 
-  def validate
-    p instance_variables
-    instance_variables.all? do |x|
-      # p self, x
-      print "#{x}"
-      self.respond_to?("#{x}")
-    end
+  def validator
+    self.class.method_names.all? { |x| public_send(x) }
   end
 end
 
-A.find_by_email("Asd")
+Play.find_by_email("Asd")
 
-a = A.new
+a = Play.new
 a.fname = "adasd"
-a.lname = "kanojia"
-p a.save
-A.collect
+a.age = 23
+a.save
 
+
+b = Play.new
+b.fname = "Abhishek"
+# b.age = 23
+b.save
+
+
+p Play.collect
+p Play.count
