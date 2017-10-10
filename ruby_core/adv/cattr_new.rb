@@ -1,6 +1,6 @@
 class CattrAccessorError < StandardError
-  def message(msg)
-    print 'Cannot set instance_accessor with instance_reader/writer'
+  def initialize(msg = "Cannot set instance_accessor to false with instance_reader/writer")
+    super
   end
 end
 
@@ -8,9 +8,10 @@ class Module
 
   DEFAULT_OPTIONS = { instance_reader: true, instance_writer: true, instance_accessor: true }
 
-  def cattr_accessor(*attributes, options)
-    p attributes
-    exit
+  def cattr_accessor(*attributes)
+    options = hash_from_attributes(*attributes) || DEFAULT_OPTIONS
+    attributes = symbols_from_hash(*attributes)
+
     DEFAULT_OPTIONS.merge!(options)
     raise CattrAccessorError if !DEFAULT_OPTIONS[:instance_accessor]
     attributes.each do |attr|
@@ -29,6 +30,14 @@ class Module
 
   private
 
+  def symbols_from_hash(*attributes)
+    attributes.delete_if{ |element| element.is_a? Hash }
+  end
+
+  def hash_from_attributes(*attributes)
+    return attributes.select { |x| x.is_a? Hash }.first
+  end
+
   def create_instance_reader_method(attr)
     ins_var = "@@#{attr}"
     define_method("#{attr}") do
@@ -45,11 +54,11 @@ class Module
 end
 
 class Person
-  # cattr_accessor :hair_colors, :address, instance_writer: true, instance_reader: false, instance_accessor: true
+  cattr_accessor :hair_colors, :address, instance_accessor: true
 end
 
 class Male < Person
-  cattr_accessor :nose
+  cattr_accessor :eye_color
 end
 
 
@@ -67,5 +76,5 @@ p Person.hair_colors
 Person.address = "patel nagar new delhi"
 p Person.address
 
-p Person.instance_methods
-# p Male.instance_methods
+p Person.instance_methods.grep /hair/
+p Male.instance_methods.grep /eye_color/
