@@ -47,39 +47,42 @@ class InteractiveClass < String
   end
 end
 
+
+puts 'Please enter the string to call function on: '
+input_string = gets.chomp
+puts
+
+string = InteractiveClass.new(input_string)
+
+puts 'List of methods available for this input.'
+p string.list_of_methods
+puts
+
+puts 'Enter the name of method you want to execute from list'
+method_to_execute = gets.chomp
+
+params = string.params(method_to_execute)
+
+parameters_required = []
+
+if params.key? :req
+  params[:req].each do |req_param|
+    print "Please provide mandatory parameter: #{req_param} "
+    parameters_required << gets.chomp
+  end
+end
+
+if params.key? :opt
+  params[:opt].each do |req_param|
+    print "Please provide optional parameter: #{req_param} "
+    parameters_required << gets.chomp
+  end
+end
+
+parameters_required.delete_if(&:empty?)
+
 begin
-  puts 'Please enter the string to call function on: '
-  input_string = gets.chomp
-  puts
-
-  string = InteractiveClass.new(input_string)
-
-  puts 'List of methods available for this input.'
-  p string.list_of_methods
-  puts
-
-  puts 'Enter the name of method you want to execute from list'
-  method_to_execute = gets.chomp
-
-  p string.execute(method_to_execute)
-rescue ArgumentError => e
-  params = string.params(method_to_execute)
-
-  parameters_required = []
-
-  if params.key? :req
-    params[:req].each do |req_param|
-      print "Please provide mandatory parameter: #{req_param} "
-      parameters_required << gets.chomp
-    end
-  end
-
-  if params.key? :opt
-    params[:opt].each do |req_param|
-      print "Please provide optional parameter: #{req_param} "
-      parameters_required << gets.chomp
-    end
-  end
-  parameters_required.delete_if(&:empty?)
   p string.execute(method_to_execute, *parameters_required)
+rescue ArgumentError => e
+  print e.message
 end

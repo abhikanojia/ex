@@ -1,13 +1,23 @@
-module Test
-  private
-
-  def method_name
-    "private method"
-  end
+module Mod
 end
 
 class A
-  include Test
+  include Mod
 end
 
-p A.new.method
+class B < A
+  prepend Mod
+end
+
+class D < B
+  include Mod
+end
+
+class C < B
+  include Mod
+  extend Mod
+  prepend Mod
+end
+
+
+p C.ancestors
