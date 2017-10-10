@@ -1,11 +1,11 @@
 class A
-  @@count = 1
+  @count = 1
   def self.count_val
-    @@count
+    @count
   end
 
   def count
-    @@count
+    @count
   end
 end
 
