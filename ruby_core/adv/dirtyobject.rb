@@ -36,12 +36,11 @@ module DirtyObject
           def changed(symbol, value)
             if @@changes_hash[symbol].include? value
               @@changes_hash.delete(symbol)
-              @@changed_status = false
             else
               @@changes_hash[symbol] += [value]
-              @@changed_status = true
             end
             @@changes_hash[symbol].delete_at(0)
+            @@changed_status = true
           end
         end
       end
@@ -102,7 +101,7 @@ u.age = 19
 p u.changes
 p u.name_was
 
-puts '---------Name was----------'
+puts '---------Name reassinged Abhishek----------'
 u.name = "Abhishek"
 p u.changes
 p u.changed?
