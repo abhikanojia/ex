@@ -13,7 +13,7 @@ module DirtyObject
         end
 
         define_method("#{attribute}=") do |value|
-          make_change(attribute.to_sym, value)
+          record_change(attribute.to_sym, value)
           instance_variable_set instance_variable, value
         end
 
@@ -37,7 +37,7 @@ module DirtyObject
         class_eval do
           @@changes_hash = Hash.new(Array.new(2))
 
-          def make_change(symbol, value)
+          def record_change(symbol, value)
             if @@changes_hash[symbol].include? value
               @@changes_hash.delete(symbol)
             else
