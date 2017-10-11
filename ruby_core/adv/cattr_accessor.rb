@@ -33,7 +33,9 @@ module CattrAccessor
   private
 
   def options_has_reader_writer_with_accessor?(options)
-    options.key?(:instance_accessor) && (options.key?(:instance_reader) || options.key?(:instance_writer)) if !options.nil?
+    if !options.nil?
+      options.key?(:instance_accessor) && (options.key?(:instance_reader) || options.key?(:instance_writer))
+    end
   end
 
   def create_instance_reader_writer(attribute, class_variable)
@@ -42,23 +44,24 @@ module CattrAccessor
   end
 
   def create_instance_accessor(attribute, options, class_variable)
-    if options[:instance_reader] && options[:instance_writer]
-      options.store(:instance_accessor, true)
+    if instance_reader_needed?(options)
+      create_instance_reader_method(attribute, class_variable)
     end
 
-    if options[:instance_accessor]
-      # Create both
-      create_instance_reader_method(attribute, class_variable)
-      create_instance_writer_method(attribute, class_variable)
-
-    elsif !options[:instance_reader] && !options[:instance_writer]
-    elsif options[:instance_reader] || !options[:instance_writer]
-      # Create reader only
-      create_instance_reader_method(attribute, class_variable)
-    elsif options[:instance_writer] || !options[:instance_reader]
-      # Create reader only
+    if instance_writer_needed?(options)
       create_instance_writer_method(attribute, class_variable)
     end
+  end
+
+
+  def instance_reader_needed?(options)
+    return if (options.key? :instance_accessor && options[:instance_accessor])
+    options[:instance_reader] || !options[:instance_writer]
+  end
+
+  def instance_writer_needed?(options)
+    return if (options.key? :instance_accessor && options[:instance_accessor])
+    options[:instance_writer] || !options[:instance_reader]
   end
 
   def create_instance_reader_method(attr, class_variable)
@@ -77,11 +80,11 @@ end
 # person class
 class Person
   extend CattrAccessor
-  cattr_accessor :hair_colors, :address, instance_accessor: true
+  cattr_accessor :hair_colors, instance_accessor: true
 end
 # male class
 class Male < Person
-  cattr_accessor :nose
+  # cattr_accessor :nose
 end
 
 # Person.hair_colors = [:brown, :black, :blonde, :red]
