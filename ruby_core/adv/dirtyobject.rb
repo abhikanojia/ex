@@ -22,11 +22,7 @@ module DirtyObject
         end
 
         define_singleton_method(:changed_status?) do
-          if !@@changed_status
-            false
-          else
-            @@changes_hash.any?
-          end
+          (!@@changed_status) ? false : @@changes_hash.any?
         end
 
         define_singleton_method(:save_object) do
@@ -38,11 +34,25 @@ module DirtyObject
           @@changes_hash = Hash.new(Array.new(2))
 
           def record_change(symbol, value)
-            if @@changes_hash[symbol].include? value
-              @@changes_hash.delete(symbol)
-            else
-              @@changes_hash[symbol] += [value]
-            end
+            change_hash_has_value?(symbol, value) ? delete_attr_from_hash(symbol) : add_new_change_to_hash(symbol, value)
+            change_status(symbol)
+          end
+
+          private
+
+          def delete_attr_from_hash(symbol)
+            @@changes_hash.delete(symbol)
+          end
+
+          def add_new_change_to_hash(symbol, value)
+            @@changes_hash[symbol] += [value]
+          end
+
+          def change_hash_has_value?(symbol, value)
+            @@changes_hash[symbol].include? value
+          end
+
+          def change_status(symbol)
             @@changes_hash[symbol].delete_at(0)
             @@changed_status = true
           end
@@ -51,16 +61,25 @@ module DirtyObject
     end
   end
 
+  def class_name
+    self.class
+  end
+
+  def change_status
+    class_name.changes_hash[symbol].delete_at(0)
+    @@changed_status = true
+  end
+
   def changed?
-    self.class.changed_status?
+    class_name.changed_status?
   end
 
   def save
-    self.class.save_object
+    class_name.save_object
   end
 
   def changes
-    self.class.change_in_hash
+    class_name.change_in_hash
   end
 
   def self.included(klass)
@@ -76,7 +95,7 @@ class User
 end
 
 
-# p User.instance_methods
+p User.instance_methods
 
 u = User.new
 u.name = 'Abhishek'
