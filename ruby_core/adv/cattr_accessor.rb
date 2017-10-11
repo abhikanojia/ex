@@ -55,13 +55,11 @@ module CattrAccessor
 
 
   def instance_reader_needed?(options)
-    return if (options.key? :instance_accessor && options[:instance_accessor])
-    options[:instance_reader] || !options[:instance_writer]
+    options[:instance_accessor] || options[:instance_reader]
   end
 
   def instance_writer_needed?(options)
-    return if (options.key? :instance_accessor && options[:instance_accessor])
-    options[:instance_writer] || !options[:instance_reader]
+    options[:instance_accessor] || options[:instance_writer]
   end
 
   def create_instance_reader_method(attr, class_variable)
@@ -80,11 +78,11 @@ end
 # person class
 class Person
   extend CattrAccessor
-  cattr_accessor :hair_colors, instance_accessor: true
+  cattr_accessor :hair_colors, instance_reader: false, instance_writer: true
 end
 # male class
 class Male < Person
-  # cattr_accessor :nose
+  cattr_accessor :nose
 end
 
 # Person.hair_colors = [:brown, :black, :blonde, :red]
