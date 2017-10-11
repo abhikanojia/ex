@@ -35,7 +35,6 @@ module DirtyObject
         end
 
         class_eval do
-          @@changed_status = false
           @@changes_hash = Hash.new(Array.new(2))
 
           def make_change(symbol, value)
