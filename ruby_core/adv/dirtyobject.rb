@@ -13,7 +13,7 @@ module DirtyObject
         end
 
         define_method("#{attribute}=") do |value|
-          changed(attribute.to_sym, value)
+          make_change(attribute.to_sym, value)
           instance_variable_set instance_variable, value
         end
 
@@ -22,7 +22,11 @@ module DirtyObject
         end
 
         define_singleton_method(:changed_status?) do
-          @@changed_status
+          if !@@changed_status
+            false
+          else
+            @@changes_hash.any?
+          end
         end
 
         define_singleton_method(:save_object) do
@@ -33,7 +37,8 @@ module DirtyObject
         class_eval do
           @@changed_status = false
           @@changes_hash = Hash.new(Array.new(2))
-          def changed(symbol, value)
+
+          def make_change(symbol, value)
             if @@changes_hash[symbol].include? value
               @@changes_hash.delete(symbol)
             else
@@ -57,7 +62,6 @@ module DirtyObject
 
   def changes
     self.class.change_in_hash
-    # { name: [nil, 'Akhil'], age: [nil, 30] }
   end
 
   def self.included(klass)
@@ -85,7 +89,7 @@ p u.changes
 
 
 p u.name_was
-# p u.email_was
+# p u.email_was # should give an error
 p u.age_was
 
 puts "----------Saving Object ------"
@@ -96,7 +100,7 @@ p u.changed?
 p u.changes
 
 puts '----------Assigned new value---------'
-u.name = 'Mayank'
+u.name = 'New Value'
 u.age = 19
 p u.changes
 p u.name_was
