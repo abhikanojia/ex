@@ -1,12 +1,13 @@
+# Cattr error
 class CattrAccessorError < StandardError
   def initialize(msg = 'Cannot set instance_accessor with instance_reader/writer.')
     super
   end
 end
-
+# Module CattrAccessor
 module CattrAccessor
   def cattr_accessor(*attributes)
-    options = attributes.select{ |element| element.is_a? Hash }.first
+    options = attributes.select { |element| element.is_a? Hash }.first
 
     raise CattrAccessorError if options_has_reader_writer_with_accessor?(options)
     attributes.each do |attribute|
@@ -32,9 +33,7 @@ module CattrAccessor
   private
 
   def options_has_reader_writer_with_accessor?(options)
-    if !options.nil?
-      options.key?(:instance_accessor) && (options.key?(:instance_reader) || options.key?(:instance_writer))
-    end
+    options.key?(:instance_accessor) && (options.key?(:instance_reader) || options.key?(:instance_writer)) if !options.nil?
   end
 
   def create_instance_reader_writer(attribute, class_variable)
@@ -43,6 +42,10 @@ module CattrAccessor
   end
 
   def create_instance_accessor(attribute, options, class_variable)
+    if options[:instance_reader] && options[:instance_writer]
+      options.store(:instance_accessor, true)
+    end
+
     if options[:instance_accessor]
       # Create both
       create_instance_reader_method(attribute, class_variable)
@@ -71,18 +74,15 @@ module CattrAccessor
   end
 end
 
-
 # person class
 class Person
   extend CattrAccessor
-  cattr_accessor :hair_colors, :address, instance_accessor: true, instance_writer: false
+  cattr_accessor :hair_colors, :address, instance_accessor: true
 end
 # male class
 class Male < Person
-  # cattr_accessor :nose
+  cattr_accessor :nose
 end
-
-
 
 # Person.hair_colors = [:brown, :black, :blonde, :red]
 # p Person.hair_colors
@@ -93,3 +93,5 @@ end
 # p Person.hair_colors
 
 p Person.instance_methods.grep /(hair|address)/
+
+p Male.instance_methods.grep /nose/

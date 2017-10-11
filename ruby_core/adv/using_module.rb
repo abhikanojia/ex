@@ -43,6 +43,10 @@ module CattrAccessor
   end
 
   def create_instance_accessor(attribute, options, class_variable)
+    if options[:instance_reader] && options[:instance_writer]
+      options.store(:instance_accessor, true)
+    end
+
     if options[:instance_accessor]
       # Create both
       create_instance_reader_method(attribute, class_variable)
@@ -75,11 +79,11 @@ end
 # person class
 class Person
   extend CattrAccessor
-  cattr_accessor :hair_colors, :address, instance_accessor: true, instance_writer: false
+  cattr_accessor :hair_colors, :address, instance_accessor: true
 end
 # male class
 class Male < Person
-  # cattr_accessor :nose
+  cattr_accessor :nose
 end
 
 
@@ -93,3 +97,5 @@ end
 # p Person.hair_colors
 
 p Person.instance_methods.grep /(hair|address)/
+
+p Male.instance_methods.grep /nose/
