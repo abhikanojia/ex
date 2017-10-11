@@ -1,0 +1,3 @@
+before_method
+after_method
+validates, params

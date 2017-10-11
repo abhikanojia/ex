@@ -1,5 +1,5 @@
 class CattrAccessorError < StandardError
-  def initialize(msg = 'Cannot set instance_accessor with instance_reader/writer')
+  def initialize(msg = 'Cannot set instance_accessor with instance_reader/writer.')
     super
   end
 end
@@ -13,7 +13,7 @@ class Module
     attributes = symbols_from_hash(*attributes)
 
     DEFAULT_OPTIONS.merge!(options)
-    raise CattrAccessorError if instance_accessor_given?
+    raise CattrAccessorError if instance_accessor_given_false?
     attributes.each do |attribute|
       class_variable = "@@#{attribute}"
       define_singleton_method("#{attribute}") do
@@ -24,15 +24,16 @@ class Module
         class_variable_set class_variable, value
       end
 
-      create_instance_reader_method(attribute) if DEFAULT_OPTIONS[:instance_reader]
-      create_instance_writer_method(attribute) if DEFAULT_OPTIONS[:instance_writer]
+      create_instance_reader_method(attribute, class_variable) if DEFAULT_OPTIONS[:instance_reader] || DEFAULT_OPTIONS[:instance_accessor]
+      create_instance_writer_method(attribute, class_variable) if DEFAULT_OPTIONS[:instance_writer] || DEFAULT_OPTIONS[:instance_accessor]
     end
   end
 
   private
 
-  def instance_accessor_given?
-    DEFAULT_OPTIONS.key? :instance_accessor
+  def instance_accessor_given_false?
+    # DEFAULT_OPTIONS.key? :instance_accessor
+    !DEFAULT_OPTIONS[:instance_accessor]
   end
 
   def symbols_from_hash(*attributes)
@@ -43,15 +44,13 @@ class Module
     attributes.select { |element| element.is_a? Hash }.first
   end
 
-  def create_instance_reader_method(attr)
-    class_variable = "@@#{attr}"
+  def create_instance_reader_method(attr, class_variable)
     define_method("#{attr}") do
       self.class.class_variable_get class_variable
     end
   end
 
-  def create_instance_writer_method(attr)
-    class_variable = "@@#{attr}"
+  def create_instance_writer_method(attr, class_variable)
     define_method("#{attr}=") do |value|
       self.class.class_variable_set class_variable, value
     end
@@ -59,7 +58,7 @@ class Module
 end
 # person class
 class Person
-  cattr_accessor :hair_colors
+  cattr_accessor :hair_colors, :a, instance_accessor: true
 end
 # male class
 class Male < Person
@@ -73,3 +72,5 @@ p Person.hair_colors
 p Male.hair_colors << :brown
 
 p Person.hair_colors
+
+p Person.instance_methods.grep /hair/

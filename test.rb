@@ -30,60 +30,60 @@
 #   end
 # end
 
-module A
-  module C
-    def method_name
-      p @list
-    end
+# module A
+#   module C
+#     def method_name
+#       p @list
+#     end
 
-    def validate_presence(*arg)
-      puts "validate_presence"
-      p @list
-    end
-  end
+#     def validate_presence(*arg)
+#       puts "validate_presence"
+#       p @list
+#     end
+#   end
 
-  def self.included(class_name)
-    class_name.extend C
-    class_name.class_eval do
-      @list = []
-    end
-  end
-end
+#   def self.included(class_name)
+#     class_name.extend C
+#     class_name.class_eval do
+#       @list = []
+#     end
+#   end
+# end
 
-class D
-  include A
-end
+# class D
+#   include A
+# end
 
-class Play
-  include A
-end
-
-
-# pl = Play.new
-# Play.method_name
+# class Play
+#   include A
+# end
 
 
-class F
-  attr_accessor :fname
-  include A
+# # pl = Play.new
+# # Play.method_name
 
-  validate_presence :fname
 
-  def meth
-    # self.class.test_meth(self)
-    puts "method_name"
-  end
+# class F
+#   attr_accessor :fname
+#   include A
 
-  def self.test_meth(var)
-    # p @list << var
-    meth()
-  end
-end
+#   validate_presence :fname
 
-f = F.new
+#   def meth
+#     # self.class.test_meth(self)
+#     puts "method_name"
+#   end
 
-# f.fname = "Abhishek"
-p F.test_meth("Asd")
+#   def self.test_meth(var)
+#     # p @list << var
+#     meth()
+#   end
+# end
+
+# f = F.new
+
+# # f.fname = "Abhishek"
+# p F.test_meth("Asd")
 # f.method_name
 
 # f.instance_eval do
@@ -100,3 +100,16 @@ p F.test_meth("Asd")
 # p a.instance_variable_defined?("@name")
 # a.test_val
 # p a.test_meth
+
+module A
+  def method
+    puts "method from A"
+  end
+end
+
+class B
+  include A
+end
+
+b = B.new
+b.method
