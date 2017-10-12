@@ -24,8 +24,11 @@ module ClassMethods
 
   def add_new_methods_to_class
     class_eval do
+      def initialize
+        @dirty_attributes = Hash.new(Array.new(2))
+      end
+
       attr_accessor :dirty_attributes
-      @dirty_attributes = Hash.new(Array.new(2))
 
       def record_change(symbol, value)
         change_hash_has_value?(symbol, value) ? delete_attr_from_hash(symbol) : add_new_change_to_hash(symbol, value)
