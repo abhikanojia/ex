@@ -1,4 +1,3 @@
-
 # Class Methods module
 module ClassMethods
   def define_dirty_attributes(*args)
@@ -125,9 +124,9 @@ end
 # p User.instance_methods
 
 u = User.new
-u.name = 'Abhishek'
-u.email = 'abhishek@vinsol.com'
-u.age = 23
+u.name = 'Akhil'
+u.email = 'akhil@vinsol.com'
+u.age = 30
 
 p u.changed?
 p u.changes
@@ -146,15 +145,15 @@ p u.changes
 
 puts '----------Assigned new value---------'
 u.name = 'New Value'
-u.age = 19
+u.age = 31
 p u.changes
 p u.name_was
 
 puts '---------Name reassinged Abhishek----------'
-u.name = "Abhishek"
+u.name = 'Akhil'
 p u.changes
 p u.changed?
 
-u.age = 23
+u.age = 30
 p u.changes
 p u.changed?
