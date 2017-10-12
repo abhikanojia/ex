@@ -1,14 +1,25 @@
-class String
-  def process
-    open_file
+module D
+  def method_name
+    # p self.class.give_count
+    @@count
+  end
+  module E
+    def give_count
+      p @@count
+    end
+    class_eval do
+      @@count = 1
+    end
   end
 
-  def open_file
-    File.open("employees.txt", "w+") do |file|
-       file.puts "done"
-       puts "done"
-    end
+  def self.included(klass)
+    klass.extend(E)
   end
 end
 
-"employees.txt".process
+class A
+
+  include D
+end
+
+p A.new.method_name
