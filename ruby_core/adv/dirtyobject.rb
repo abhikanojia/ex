@@ -24,7 +24,8 @@ module ClassMethods
 
   def add_new_methods_to_class
     class_eval do
-      @@changes_hash = Hash.new(Array.new(2))
+      attr_accessor :dirty_attributes
+      @dirty_attributes = Hash.new(Array.new(2))
 
       def record_change(symbol, value)
         change_hash_has_value?(symbol, value) ? delete_attr_from_hash(symbol) : add_new_change_to_hash(symbol, value)
@@ -34,19 +35,19 @@ module ClassMethods
       private
 
       def delete_attr_from_hash(symbol)
-        @@changes_hash.delete(symbol)
+        @dirty_attributes.delete(symbol)
       end
 
       def add_new_change_to_hash(symbol, value)
-        @@changes_hash[symbol] += [value]
+        @dirty_attributes[symbol] += [value]
       end
 
       def change_hash_has_value?(symbol, value)
-        @@changes_hash[symbol].include? value
+        @dirty_attributes[symbol].include? value
       end
 
       def change_status(symbol)
-        @@changes_hash[symbol].delete_at(0)
+        @dirty_attributes[symbol].delete_at(0)
         @@changed_status = true
       end
     end
@@ -61,19 +62,19 @@ module ClassMethods
 
   def create_change_status_predicate_method
     define_singleton_method(:changed_status?) do
-      (!@@changed_status) ? false : @@changes_hash.any?
+      (!@@changed_status) ? false : @dirty_attributes.any?
     end
   end
 
   def create_change_in_hash_method
     define_singleton_method(:change_in_hash) do
-      !@@changed_status ? {} : @@changes_hash
+      !@@changed_status ? {} : @dirty_attributes
     end
   end
 
   def create_last_attribute_method(attribute)
     define_method("#{attribute}_was") do
-      @@changes_hash[attribute].first
+      @dirty_attributes[attribute].first
     end
   end
 
@@ -120,6 +121,8 @@ class User
   define_dirty_attributes :name, :age
 end
 
+
+# @dirty_attributes  {email: [3, 4], name: [nil, nil]}
 
 # p User.instance_methods
 
