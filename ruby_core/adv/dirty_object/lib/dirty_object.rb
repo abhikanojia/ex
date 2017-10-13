@@ -1,6 +1,6 @@
 # change
 module ClassMethods
-  def dirty_attributes(*args)
+  def define_dirty_attributes(*args)
     initialize_class
     args.each do |attribute|
       instance_variable = "@#{attribute}"

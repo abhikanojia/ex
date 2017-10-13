@@ -4,7 +4,7 @@ require_relative '../lib/dirty_object.rb'
 class User
   include DirtyObject
   attr_accessor :name, :age, :email
-  dirty_attributes :name, :age
+  define_dirty_attributes :name, :age
 end
 
 u = User.new
