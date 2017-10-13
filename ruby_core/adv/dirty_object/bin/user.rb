@@ -1,5 +1,5 @@
 # require dirty object
-require_relative '../bin/dirtyobject.rb'
+require_relative '../lib/dirty_object.rb'
 # User class includes dirty object
 class User
   include Dirty
