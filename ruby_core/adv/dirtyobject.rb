@@ -130,6 +130,8 @@ end
 # p User.instance_methods
 
 u = User.new
+p u
+exit
 u.name = 'Akhil'
 u.email = 'akhil@vinsol.com'
 u.age = 30

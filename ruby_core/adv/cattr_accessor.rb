@@ -1,6 +1,6 @@
 # Invalid Argument
 class InvalidArgument < ArgumentError
-  def initialize(msg = 'Invalid Argument provided for cattr_accessor. Argument must be Symbol')
+  def initialize(msg = 'Invalid Argument provided for cattr_accessor.')
     super
   end
 end
@@ -13,12 +13,13 @@ end
 # Module CattrAccessor
 module CattrAccessor
 
-  def cattr_accessor(*attributes)
-    raise InvalidArgument if !valid_attributes(*attributes)
-    options = attributes.select { |element| element.is_a? Hash }.first
+  def cattr_accessor(*arguments)
+    options = arguments.select { |element| element.is_a? Hash }.first
+    attribute = arguments.select{ |element| element.is_a? Symbol }
 
+    raise InvalidArgument if !valid_attributes?(attribute, options)
     raise CattrAccessorError if options_has_reader_writer_with_accessor?(options)
-    attributes.each do |attribute|
+    arguments.each do |attribute|
       next if attribute.is_a? Hash
 
       class_variable = "@@#{attribute}"
@@ -41,8 +42,23 @@ module CattrAccessor
     options.nil? || options.empty?
   end
 
-  def valid_attributes(*arguments)
-    arguments.all? { |argument| [Hash, Symbol].include? argument.class }
+  def valid_symbol?(argument)
+    argument.is_a? Symbol
+  end
+
+  def valid_options?(argument)
+    valid_keys = [:instance_reader, :instance_writer, :instance_accessor]
+    valid_values = [true, false]
+    argument.all?{ |key, value| valid_keys.include?(key) && valid_values.include?(value) }
+
+  end
+
+  def valid_attributes?(attribute, options)
+    if !options_given?(options)
+      attribute.all? { |element| valid_symbol?(element) } && valid_options?(options)
+    else
+      attribute.all? { |element| valid_symbol?(element) }
+    end
   end
 
   def create_class_reader(argument)
