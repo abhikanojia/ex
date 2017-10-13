@@ -12,7 +12,8 @@ class CattrAccessorError < StandardError
 end
 # Module CattrAccessor
 module CattrAccessor
-
+  VALID_KEYS = [:instance_reader, :instance_writer, :instance_accessor]
+  VALID_VALUES = [true, false]
   def cattr_accessor(*arguments)
     options = arguments.select { |element| element.is_a? Hash }.first
     attribute = arguments.select{ |element| element.is_a? Symbol }
@@ -47,10 +48,7 @@ module CattrAccessor
   end
 
   def valid_options?(argument)
-    valid_keys = [:instance_reader, :instance_writer, :instance_accessor]
-    valid_values = [true, false]
-    argument.all?{ |key, value| valid_keys.include?(key) && valid_values.include?(value) }
-
+    argument.all?{ |key, value| VALID_KEYS.include?(key) && VALID_VALUES.include?(value) }
   end
 
   def valid_attributes?(attribute, options)

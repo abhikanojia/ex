@@ -2,7 +2,7 @@
 require_relative '../lib/dirty_object.rb'
 # User class includes dirty object
 class User
-  include Dirty
+  include DirtyObject
   attr_accessor :name, :age, :email
   dirty_attributes :name, :age
 end

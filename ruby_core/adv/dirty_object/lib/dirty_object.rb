@@ -43,7 +43,7 @@ module ClassMethods
 
       def save_object
         @dirty_hash_change = false
-        true
+        p true
       end
     end
   end
@@ -70,7 +70,7 @@ module ClassMethods
   end
 end
 
-module Dirty
+module DirtyObject
   def self.included(klass)
     klass.extend(ClassMethods)
   end
