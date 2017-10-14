@@ -1,7 +1,6 @@
 module Filters
   module ClassMethods
     def before_action(*arguments)
-      p arguments
       class_instance_methods = instance_methods(false)
       class_instance_methods.delete(arguments.first)
       class_instance_methods.each do |method_name|
@@ -42,8 +41,8 @@ class BaseController
     p "required_login"
   end
 
-  def method_name
-    p "method name"
+  def method_name(param)
+    p "method name #{param}"
   end
 
   before_action :required_login
