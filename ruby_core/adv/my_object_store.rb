@@ -52,14 +52,15 @@ module MyObjectStore
 
     def argument_exists(argument)
       if !instance_variable_defined?("@#{argument}")
-        @valid = false
+        self.valid = false
         @errors.store(argument, ['can\'t be blank'])
       end
     end
 
     def argument_numeric(argument)
-      if !self.age.is_a?(Integer)
+      if !self.send(argument.to_sym).is_a? Integer
         self.valid = false
+        errors.store(argument, ['Not numeric'])
       end
     end
 
@@ -102,7 +103,7 @@ class A
   attr_accessor :name, :age
 
   validates_presence_of :name, :age
-  validates_numericality_of :age
+  validates_numericality_of :age, :name
 end
 
 
