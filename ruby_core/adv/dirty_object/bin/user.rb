@@ -9,33 +9,63 @@ end
 
 u = User.new
 
-u.name = 'Akhil'
+p u.name # nil
+p u.age # nil
+
+p "Changes"
+u.changes # {}
+
+p "Assign nil"
+u.name = nil
+u.age = nil
+
+p "changes should be empty"
+u.changes # {}
+
+u.name = 'TEST'
 u.age = 30
 
-u.changed?
-u.changes
+u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
 
-u.name_was
-u.email_was
-u.age_was
+u.name = 'TEST'
+u.age = 30
+
+u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
 
 u.save
 
-u.changed?
-u.changes
+u.changes # {}
 
 
-u.name = 'New name'
-u.age = 31
+# u = User.new
 
-u.changes
-u.name_was
+# u.name = 'Akhil'
+# u.age = 30
 
-u.name = 'Akhil'
-u.changes
-u.changed?
+# u.changed?
+# u.changes
 
-u.age = 30
-u.changes
+# u.name_was
+# u.email_was
+# u.age_was
 
-u.changed?
+# u.save
+
+# u.changed?
+# u.changes
+
+
+# u.name = 'New name'
+# u.age = 31
+
+# u.changes
+# u.name_was
+
+# u.name = 'Akhil'
+# u.changes
+# u.changed?
+
+# u.age = 30
+# u.changes
+
+# u.changed?

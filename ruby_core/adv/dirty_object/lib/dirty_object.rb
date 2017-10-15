@@ -20,14 +20,18 @@ module ClassMethods
       private
 
       def delete_attr_from_hash(symbol)
+        # p "delete attribute"
         @dirty_attributes.delete(symbol)
       end
 
       def add_new_change_to_hash(symbol, value)
         @dirty_attributes[symbol] += [value]
+        # @dirty_attributes[symbol].shift if @dirty_attributes[symbol].size > 2
       end
 
       def dirty_attributes_key_value_exists?(key, value)
+        # p "whether key value exists?"
+
         @dirty_attributes.key?(key) && @dirty_attributes[key].include?(value)
       end
 
@@ -37,12 +41,13 @@ module ClassMethods
       end
 
       def change_status(symbol)
-        @dirty_attributes[symbol].delete_at(0)
+        @dirty_attributes[symbol].shift
         @dirty_hash_change = true
       end
 
       def save_object
         @dirty_hash_change = false
+        @dirty_attributes.each { |key, values| values.shift }
         p true
       end
     end
@@ -64,7 +69,7 @@ module ClassMethods
 
   def create_instance_writer_method(attribute, instance_variable)
     define_method("#{attribute}=") do |value|
-      record_change(attribute.to_sym, value)
+      record_change(attribute.to_sym, value) if !value.nil?
       instance_variable_set instance_variable, value
     end
   end
@@ -80,11 +85,12 @@ module DirtyObject
   end
 
   def changed?
-    p (!@dirty_hash_change ? false : @dirty_attributes.any?)
+    p @dirty_hash_change
   end
 
   def save
-    save_object
+    @dirty_hash_change = false
+    p true
   end
 
   def method_missing(name)

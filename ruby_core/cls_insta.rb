@@ -21,6 +21,7 @@ module ClassMethods
 
       def delete_attr_from_hash(symbol)
         @dirty_attributes.delete(symbol)
+        # @dirty_hash_change = false if @dirty_attributes.
       end
 
       def add_new_change_to_hash(symbol, value)
