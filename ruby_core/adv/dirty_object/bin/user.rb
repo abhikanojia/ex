@@ -24,8 +24,12 @@ u.age = 30
 
 u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
 
+
+
 u.name = 'TEST'
-u.age = 30
+u.age = 303
+
+
 
 u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
 

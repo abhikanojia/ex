@@ -47,7 +47,7 @@ module ClassMethods
         p true
       end
 
-      def value_doesnt_exist_in_hash(value)
+      def value_doesnt_exist_in_hash(value) # rename to value_changed?
         @dirty_attributes.none? { |key, values| values.include? value }
       end
     end
