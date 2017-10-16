@@ -1,15 +1,14 @@
 module A; end
 
-x = proc { p self }
-# x.call 3
 class B
-  def initialize(&block)
-    # block.call
-  end
+  prepend A
+  # include A
 end
 
-ob = B.new
-ob.instance_eval do
-  x.call
+class C < B
+  prepend A
 end
-# ob.method_name(&x)
+
+# p B.ancestors
+# p B.singleton_class.ancestors
+p C.ancestors
