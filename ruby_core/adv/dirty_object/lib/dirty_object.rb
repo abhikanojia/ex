@@ -20,27 +20,23 @@ module ClassMethods
       private
 
       def delete_attr_from_hash(symbol)
-        # p "delete attribute"
         @dirty_attributes.delete(symbol)
       end
 
       def add_new_change_to_hash(symbol, value)
         @dirty_attributes[symbol] += [value]
-        # @dirty_attributes[symbol].shift if @dirty_attributes[symbol].size > 2
       end
 
       def dirty_attributes_key_value_exists?(key, value)
-        # p "whether key value exists?"
-
         @dirty_attributes.key?(key) && @dirty_attributes[key].include?(value)
       end
 
       def record_change(attribute, value)
         dirty_attributes_key_value_exists?(attribute, value) ? delete_attr_from_hash(attribute) : add_new_change_to_hash(attribute, value)
-        change_status(attribute)
+        change_status(attribute, value)
       end
 
-      def change_status(symbol)
+      def change_status(symbol, value)
         @dirty_attributes[symbol].shift
         @dirty_hash_change = true
       end
@@ -49,6 +45,10 @@ module ClassMethods
         @dirty_hash_change = false
         @dirty_attributes.each { |key, values| values.shift }
         p true
+      end
+
+      def value_doesnt_exist_in_hash(value)
+        @dirty_attributes.none? { |key, values| values.include? value }
       end
     end
   end
@@ -69,7 +69,7 @@ module ClassMethods
 
   def create_instance_writer_method(attribute, instance_variable)
     define_method("#{attribute}=") do |value|
-      record_change(attribute.to_sym, value) if !value.nil?
+      record_change(attribute.to_sym, value) if value_doesnt_exist_in_hash(value) && !value.nil?
       instance_variable_set instance_variable, value
     end
   end

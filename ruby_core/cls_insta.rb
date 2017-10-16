@@ -15,6 +15,7 @@ module ClassMethods
       def initialize
         @dirty_attributes = Hash.new(Array.new(2))
         @dirty_hash_change = false
+        @dirty_db = Hash.new(Array.new(2))
       end
 
       private
@@ -33,8 +34,12 @@ module ClassMethods
       end
 
       def record_change(attribute, value)
-        dirty_attributes_key_value_exists?(attribute, value) ? delete_attr_from_hash(attribute) : add_new_change_to_hash(attribute, value)
-        change_status(attribute)
+        if dirty_attributes_key_value_exists?(attribute, value)
+          delete_attr_from_hash(attribute) if !@dirty_hash_change
+        else
+          add_new_change_to_hash(attribute, value)
+          change_status(attribute)
+        end
       end
 
       def change_status(symbol)
@@ -44,7 +49,13 @@ module ClassMethods
 
       def save_object
         @dirty_hash_change = false
+        @dirty_db = @dirty_attributes
+        @dirty_attributes.clear
         true
+      end
+
+      def dirty_db_doesnt_have(value)
+        @dirty_db.none? { |key, keyvalue| keyvalue.include? value }
       end
     end
   end
@@ -65,7 +76,8 @@ module ClassMethods
 
   def create_instance_writer_method(attribute, instance_variable)
     define_method("#{attribute}=") do |value|
-      record_change(attribute.to_sym, value)
+      return if value.nil?
+      record_change(attribute.to_sym, value) if dirty_db_doesnt_have(value)
       instance_variable_set instance_variable, value
     end
   end
@@ -82,6 +94,7 @@ module Dirty
 
   def changed?
     p (!@dirty_hash_change ? false : @dirty_attributes.any?)
+    # p @dirty_attributes.any?
   end
 
   def save
@@ -132,3 +145,36 @@ u.age = 30
 u.changes
 
 u.changed?
+
+
+# u = User.new
+
+# p u.name # nil
+# p u.age # nil
+
+# p "Changes"
+# u.changes # {}
+
+
+# u.name = nil
+# u.age = nil
+
+# u.changes # {}
+
+# u.name = 'TEST'
+# u.age = 30
+
+# # p u.name
+
+# u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
+
+# u.name = 'TEST'
+# u.age = 30
+
+# p "changes 2"
+
+# u.changes # {:name=>[nil, "TEST"], :age=>[nil, 30]}
+
+# u.save
+
+# u.changes # {}
